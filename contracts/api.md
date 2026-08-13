@@ -29,7 +29,8 @@ Response 200:
 
     {
       "session": { ...AuthSession... },
-      "first_question": { ...QuestionSpec... } | null
+      "first_question": { ...QuestionSpec... } | null,
+      "question_audio_b64": "<base64 mp3>" | null   // TTS; null when unwired
     }
 
 ## POST /session/answer
@@ -46,6 +47,7 @@ Response 200:
     {
       "session": { ...AuthSession, status may now be identified|rejected... },
       "next_question": { ...QuestionSpec... } | null,   // null when finished
+      "question_audio_b64": "<base64 mp3>" | null,      // TTS; null when unwired
       "result": {                                       // null while in_progress
         "status": "identified",
         "user_id": "u_ada",

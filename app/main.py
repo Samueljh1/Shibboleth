@@ -58,6 +58,11 @@ def _build() -> tuple[dict, dict[str, str]]:
 
         return ElevenLabsStt(settings)
 
+    def tts():
+        from voice.tts import ElevenLabsTts
+
+        return ElevenLabsTts(settings)
+
     def llm():
         from engine.llm import OpenRouterLlm
 
@@ -86,7 +91,7 @@ def _build() -> tuple[dict, dict[str, str]]:
 
     for name, fn in (
         ("embedder", embedder), ("store", store), ("voice", voice),
-        ("stt", stt), ("llm", llm), ("engine", engine),
+        ("stt", stt), ("tts", tts), ("llm", llm), ("engine", engine),
     ):
         attempt(name, fn)
     return parts, errors
@@ -118,6 +123,19 @@ class WipeBody(BaseModel):
     user_id: str
 
 
+def _speak(q: QuestionSpec | None) -> str | None:
+    """TTS of the question, or None. Optional by design: no key, a timeout or a
+    quota error degrades to text rather than stalling the demo."""
+    tts = P.get("tts")
+    if q is None or tts is None:
+        return None
+    try:
+        return base64.b64encode(tts.speak(q.question_text)).decode()
+    except Exception as exc:  # noqa: BLE001
+        print(f"[tts] {type(exc).__name__}: {exc}")
+        return None
+
+
 def _advance(s: AuthSession) -> dict:
     """Ask the next question, or finalise. Shared by /start and /answer."""
     (store, engine) = need("store", "engine")
@@ -142,6 +160,7 @@ def _advance(s: AuthSession) -> dict:
     return {
         "session": s.model_dump(by_alias=True, mode="json"),
         "next_question": q.model_dump(mode="json") if q else None,
+        "question_audio_b64": _speak(q),
         "result": result,
     }
 
@@ -175,7 +194,14 @@ def session_start(body: StartBody) -> dict:
     if not body.audio_b64:
         raise HTTPException(400, "audio_b64 required")
 
-    voice_vec = voice.embed_voice(base64.b64decode(body.audio_b64))
+    try:
+        voice_vec = voice.embed_voice(base64.b64decode(body.audio_b64))
+    except Exception as exc:
+        # NoSpeechDetected (silence / dead mic) and undecodable audio are the
+        # user's problem to fix, not a server fault -- say so plainly.
+        if type(exc).__name__ in {"NoSpeechDetected", "AudioDecodeError"}:
+            raise HTTPException(400, f"{exc} - hold the button and speak for ~3 seconds")
+        raise
     candidates = store.narrow(voice_vec, settings.voice_topk)
     if not candidates:
         raise HTTPException(404, "no enrolled voiceprints — run scripts/seed.py")
@@ -187,6 +213,7 @@ def session_start(body: StartBody) -> dict:
     return {
         "session": out["session"],
         "first_question": out["next_question"],
+        "question_audio_b64": out["question_audio_b64"],
     }
 
 
