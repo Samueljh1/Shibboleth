@@ -1,30 +1,71 @@
 <!doctype html>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Shibboleth</title>
 <link rel="stylesheet" href="/style.css">
 
+<div id="banner" hidden></div>
+
 <header>
-  <h1>SHIBBOLETH</h1>
-  <p>Prove you're you, from any device. Uncloneable.</p>
+  <div class="brand">
+    <h1>SHIBBOLETH</h1>
+    <p>Prove you're you, from any device. Uncloneable.</p>
+  </div>
+  <div class="headmeta">
+    <div id="health" class="health">
+      <span class="hlabel">GET /health</span>
+      <span class="chip" id="h-store">store</span>
+      <span class="chip" id="h-voice">voice</span>
+      <span class="chip" id="h-engine">engine</span>
+    </div>
+    <a class="signup" href="/signup.html">+ enroll a new voice &rarr;</a>
+  </div>
 </header>
 
 <main>
   <section id="left">
-    <div class="panel">
-      <button id="rec">Hold to speak</button>
-      <label>claiming to be <input id="claimed" placeholder="u_ada (optional)"></label>
-      <button id="go" class="primary">Authenticate</button>
+
+    <div class="panel step" id="panel-start">
+      <div class="steplabel">1 &middot; SPEAK</div>
+      <div class="reczone">
+        <button id="rec" class="rec">
+          <span class="dot"></span>
+          <span class="reclabel">HOLD TO SPEAK</span>
+        </button>
+        <span id="rec-time" class="timer">0.0s</span>
+        <span class="level"><i id="rec-level"></i></span>
+        <span id="rec-state" class="recstate">no audio yet</span>
+      </div>
+      <div class="startrow">
+        <label>claiming to be <input id="claimed" placeholder="u_ada (optional)" autocomplete="off"></label>
+        <button id="go" class="primary">AUTHENTICATE</button>
+        <span class="kbd">hold <b>SPACE</b> to talk</span>
+      </div>
     </div>
 
-    <div class="panel">
-      <div id="question">-</div>
-      <input id="answer" placeholder="Type your answer, or hold to speak">
-      <button id="send">Answer</button>
-    </div>
-
-    <div class="panel">
-      <label>wipe memory <input id="wipe-id" placeholder="u_ada"></label>
-      <button id="wipe" class="danger">Wipe</button>
+    <div class="panel step" id="panel-q">
+      <div class="qhead">
+        <div class="steplabel">2 &middot; <span id="qcount">QUESTION</span></div>
+        <span id="qdots" class="dots"></span>
+        <div class="qig"><span id="qig">-</span> bits expected gain</div>
+        <div class="qaudio">
+          <button id="spk" class="ghost on" title="speaker on/off">SPEAKER ON</button>
+          <button id="replay" class="ghost" title="replay question audio" disabled>REPLAY</button>
+        </div>
+      </div>
+      <div id="question" class="idle">Hold to speak, then hit AUTHENTICATE.</div>
+      <div id="qowner" class="qowner"></div>
+      <div class="answerrow">
+        <input id="answer" placeholder="Type your answer and press Enter" autocomplete="off">
+        <button id="send" class="primary">ANSWER</button>
+        <button id="rec-ans" class="rec small">
+          <span class="dot"></span>
+          <span class="reclabel">HOLD TO ANSWER</span>
+        </button>
+        <span id="rec-ans-time" class="timer">0.0s</span>
+        <span class="level"><i id="rec-ans-level"></i></span>
+      </div>
+      <div class="kbd hintrow">typed answers always work &middot; <b>Esc</b> leaves the box so <b>SPACE</b> records</div>
     </div>
 
     <ol id="log"></ol>
@@ -32,12 +73,37 @@
 
   <section id="right">
     <div id="entropy">
-      <div class="bits"><span id="bits">-</span> bits</div>
+      <div class="entrohead">
+        <span class="steplabel">SHANNON ENTROPY</span>
+        <span id="trace" class="trace"></span>
+      </div>
+      <div class="bits"><span id="bits">-</span><em>bits</em><span id="bitsmax" class="bitsmax"></span></div>
       <div class="meter"><div id="meter-fill"></div></div>
     </div>
+
+    <div class="steplabel candlabel">CANDIDATES <span id="candcount"></span></div>
     <div id="bars"></div>
+
     <div id="verdict"></div>
+
+    <div class="panel enrolled">
+      <div class="steplabel">ENROLLED <span id="enrolled-n"></span></div>
+      <div id="enrolled" class="enrolled-list">loading&hellip;</div>
+      <div class="wiperow">
+        <label>wipe memory <input id="wipe-id" placeholder="u_ada" autocomplete="off"></label>
+        <button id="wipe" class="danger">WIPE</button>
+      </div>
+    </div>
   </section>
 </main>
+
+<div id="overlay" hidden>
+  <div class="obox">
+    <div id="o-top" class="otop"></div>
+    <div id="o-sub" class="osub"></div>
+    <div id="o-meta" class="ometa"></div>
+    <button id="o-dismiss" class="ghost">DISMISS &middot; ESC</button>
+  </div>
+</div>
 
 <script src="/app.js"></script>

@@ -39,9 +39,9 @@ def _build() -> tuple[dict, dict[str, str]]:
             errors[name] = f"{type(exc).__name__}: {exc}"
 
     def embedder():
-        from store.embeddings import OpenAIEmbedder
+        from store.embeddings import VoyageEmbedder
 
-        return OpenAIEmbedder(settings)
+        return VoyageEmbedder(settings)
 
     def store():
         from store.atlas_store import AtlasStore
@@ -71,7 +71,7 @@ def _build() -> tuple[dict, dict[str, str]]:
     def engine():
         from engine.engine import EntropyEngine
 
-        return EntropyEngine(
+        eng = EntropyEngine(
             store=parts["store"],
             embedder=parts["embedder"],
             llm=parts["llm"],
@@ -79,6 +79,15 @@ def _build() -> tuple[dict, dict[str, str]]:
             tau_reject=settings.tau_reject,
             max_questions=settings.max_questions,
         )
+        # Constructing a stub succeeds — only the methods raise. Probe one so
+        # /health tells the truth and endpoints 503 instead of 500.
+        try:
+            eng.start([("__probe__", 1.0)])
+        except NotImplementedError:
+            raise
+        except Exception:
+            pass  # real implementation, just unhappy with a fake candidate
+        return eng
 
     for name, fn in (
         ("embedder", embedder), ("store", store), ("voice", voice),
@@ -228,6 +237,16 @@ def session_wipe(body: WipeBody) -> dict:
     return {"ok": True, "deleted": deleted}
 
 
+# Signup / enrollment routes. Guarded so a broken router can't stop the demo.
+try:
+    from app.routes_enroll import router as enroll_router
+
+    app.include_router(enroll_router)
+except Exception as exc:  # noqa: BLE001
+    ERR["enroll_routes"] = f"{type(exc).__name__}: {exc}"
+    print(f"[app] enrollment routes unavailable: {exc}")
+
+# Static mount is last — "/" would otherwise shadow every API route above.
 _web = Path(__file__).resolve().parent.parent / "web"
 if _web.exists():
     app.mount("/", StaticFiles(directory=str(_web), html=True), name="web")

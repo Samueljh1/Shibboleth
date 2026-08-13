@@ -6,6 +6,9 @@ tell the other person.
 
 Base URL: `http://localhost:8000`. All bodies and responses are JSON.
 
+Two pages are served off the same app: `/` is the stage demo, `/signup.html` is
+the public enrollment page judges use on their phones.
+
 **Every response that touches a session returns the full `AuthSession`** so the
 UI can animate posterior bars and the entropy meter without extra round-trips.
 
@@ -65,6 +68,40 @@ Request: `{ "user_id": "u_ada" }` → Response: `{ "ok": true, "deleted": 21 }`
 Enrolled users, for the demo's speaker picker.
 
 Response: `[ { "id": "u_ada", "name": "Ada", "role": "founder", "memory_count": 21 } ]`
+
+## Enrollment (signup site)
+
+How a stranger becomes an enrolled user: they copy a prompt into their own AI
+assistant, paste its JSON reply here, review and edit it, then commit.
+
+### GET /prompt.txt
+
+The briefing prompt, `text/plain`. Served from `web/prompt.txt`.
+
+### POST /enroll/preview
+
+Request: `{ "raw": "<whatever the assistant replied>" }`
+
+Response: `{ "doc": {...}, "warnings": ["dropped 2 memories containing digits"], "memory_count": 18 }`
+
+Parses leniently (raw JSON, embedded JSON block, then an LLM conversion), then
+sanitises. Nothing is written to the database by this call — it exists so the
+user can review and delete before committing. 400 with a readable message when
+the paste can't be parsed.
+
+### POST /enroll
+
+Request: `{ "doc": {...edited doc...}, "audio_b64": "..."|null, "user_id": null }`
+
+Response: `{ "user_id": "u_ada_4f1c", "name": "Ada", "memories": 18, "voiceprint": true, "warnings": [] }`
+
+Sanitises again server-side — the client is never trusted. Voice is optional:
+without usable audio the user still enrolls, just with `voiceprint: false`, and
+can't be narrowed to until a voiceprint exists.
+
+### GET /enrolled
+
+Response: `[ { "id": "u_ada", "name": "Ada", "memory_count": 18 } ]`
 
 ## GET /health
 

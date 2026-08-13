@@ -16,7 +16,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from app.config import settings
-from store.embeddings import OpenAIEmbedder
+from store.embeddings import VoyageEmbedder
 
 ROOT = Path(__file__).resolve().parent.parent
 PERSONAS = ROOT / "store" / "personas"
@@ -31,7 +31,7 @@ def _ts(raw: str) -> datetime:
 def main(create_index: bool = False) -> None:
     from pymongo import MongoClient
 
-    embedder = OpenAIEmbedder(settings)
+    embedder = VoyageEmbedder(settings)
     db = MongoClient(settings.mongodb_uri)[settings.atlas_db]
 
     encoder = None
