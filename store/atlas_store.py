@@ -6,6 +6,7 @@ Collections: users, voiceprints (vector index), memory_events, auth_sessions.
 from __future__ import annotations
 
 from pymongo import MongoClient
+from pymongo.server_api import ServerApi
 
 from app.config import Settings
 from contracts.interfaces import Embedder
@@ -18,9 +19,11 @@ class AtlasStore:
     def __init__(self, settings: Settings, embedder: Embedder) -> None:
         if not settings.mongodb_uri:
             raise RuntimeError("MONGODB_URI is not set")
+        if "<db_password>" in settings.mongodb_uri:
+            raise RuntimeError("MONGO_PASSWORD is not set (URI still has <db_password>)")
         self.s = settings
         self.embedder = embedder
-        self.db = MongoClient(settings.mongodb_uri)[settings.atlas_db]
+        self.db = MongoClient(settings.mongodb_uri, server_api=ServerApi("1"))[settings.atlas_db]
 
     def narrow(self, voice_vec: list[float], k: int) -> list[tuple[str, float]]:
         pipeline = [

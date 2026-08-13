@@ -1,0 +1,121 @@
+{
+  "id": "u_elle",
+  "name": "Elle",
+  "profile": {
+    "role": "high school chemistry teacher",
+    "city": "Portland, Maine",
+    "pet": "Fennel, a whippet",
+    "commute": "a 2009 Volvo V70 wagon with a roof rack",
+    "hobby": "collecting sea glass at Higgins Beach"
+  },
+  "memories": [
+    {
+      "ts": "2026-08-06T10:40:00Z",
+      "kind": "event",
+      "text": "Went down to Higgins Beach at low tide and found one piece of cobalt blue sea glass, which is the first blue I have found since April.",
+      "salient_attrs": { "beach": "Higgins", "found": "cobalt blue" }
+    },
+    {
+      "ts": "2026-08-06T18:25:00Z",
+      "kind": "fact",
+      "text": "The sea glass lives in three mason jars on the kitchen sill sorted by colour, and the green jar is so full the lid no longer sits flat.",
+      "salient_attrs": { "jars": 3, "fullest": "green" }
+    },
+    {
+      "ts": "2026-08-07T11:10:00Z",
+      "kind": "decision",
+      "text": "Decided to open the year with the copper cycle lab instead of flame tests, because the flame tests always burn the whole first week on one afternoon of colour.",
+      "salient_attrs": { "first_lab": "copper cycle", "replaced": "flame tests" }
+    },
+    {
+      "ts": "2026-08-07T16:00:00Z",
+      "kind": "event",
+      "text": "Fennel stole a wool sock off the drying rack and buried it in the raised bed, and I only found it because the corner was sticking out of the soil.",
+      "salient_attrs": { "pet": "Fennel", "stole": "wool sock" }
+    },
+    {
+      "ts": "2026-08-08T09:30:00Z",
+      "kind": "fact",
+      "text": "I have three sections of AP chemistry this year and eighty-four students on the rosters, which is eleven more than last year.",
+      "salient_attrs": { "sections": 3, "students": 84 }
+    },
+    {
+      "ts": "2026-08-08T14:15:00Z",
+      "kind": "event",
+      "text": "Inventoried the stockroom and found the silver nitrate bottle down to about a fifth, so I put in the order before the district freezes purchasing.",
+      "salient_attrs": { "chemical": "silver nitrate", "remaining": "one fifth" }
+    },
+    {
+      "ts": "2026-08-09T08:00:00Z",
+      "kind": "event",
+      "text": "Drove the Volvo out to Bradbury Mountain with Fennel and did the loop in an hour and ten, which is slower than usual because of the blackflies.",
+      "salient_attrs": { "hike": "Bradbury Mountain", "duration": "1h10" }
+    },
+    {
+      "ts": "2026-08-09T19:45:00Z",
+      "kind": "conversation",
+      "text": "My twin nieces Juno and Wren video called to show me a jar of pond water and demanded I identify everything swimming in it.",
+      "salient_attrs": { "nieces": "Juno and Wren", "topic": "pond water" }
+    },
+    {
+      "ts": "2026-08-10T13:20:00Z",
+      "kind": "decision",
+      "text": "Decided to build the cold frame out of the old storm windows in the garage rather than buy the kit, and cut the first two cedar rails to forty-eight inches.",
+      "salient_attrs": { "project": "cold frame", "rail_inches": 48 }
+    },
+    {
+      "ts": "2026-08-10T20:00:00Z",
+      "kind": "fact",
+      "text": "I drink Earl Grey with a splash of oat milk, and I have never once finished a mug before it goes cold on the windowsill.",
+      "salient_attrs": { "drink": "Earl Grey with oat milk" }
+    },
+    {
+      "ts": "2026-08-11T10:50:00Z",
+      "kind": "conversation",
+      "text": "The new principal, Mr. Alvarado, asked me to take on the science fair coordinator role and I said I would only do it if I get the big lab on Fridays.",
+      "salient_attrs": { "principal": "Mr. Alvarado", "condition": "big lab on Fridays" }
+    },
+    {
+      "ts": "2026-08-11T17:30:00Z",
+      "kind": "event",
+      "text": "The fume hood alarm went off during the walkthrough and the maintenance lead traced it to a sash sensor that had been taped over since last spring.",
+      "salient_attrs": { "equipment": "fume hood", "cause": "taped sash sensor" }
+    },
+    {
+      "ts": "2026-08-12T13:45:00Z",
+      "kind": "decision",
+      "text": "Decided to seat the classes in groups of four rather than pairs, and drew the whole seating chart on graph paper with a mechanical pencil.",
+      "salient_attrs": { "group_size": 4, "was": "pairs" }
+    },
+    {
+      "ts": "2026-08-12T15:55:00Z",
+      "kind": "event",
+      "text": "Laminated ninety-six element cards for the periodic table game and the laminator jammed twice on the lanthanides.",
+      "salient_attrs": { "cards": 96, "jammed_on": "lanthanides" }
+    },
+    {
+      "ts": "2026-08-12T21:10:00Z",
+      "kind": "conversation",
+      "text": "My neighbour Doris came over the fence to say she would take Fennel on her afternoon walks once school starts, and refused to be paid for it.",
+      "salient_attrs": { "neighbour": "Doris", "arrangement": "afternoon dog walks" }
+    },
+    {
+      "ts": "2026-08-13T07:50:00Z",
+      "kind": "event",
+      "text": "The Volvo's check engine light came on at the Forest Avenue lights and went off again by the time I parked, which is the fourth time this summer.",
+      "salient_attrs": { "car": "2009 Volvo V70", "occurrences": 4 }
+    },
+    {
+      "ts": "2026-08-13T09:15:00Z",
+      "kind": "fact",
+      "text": "First day with students is the twenty-sixth, and my first period starts at seven forty-five with the section that has nineteen seniors in it.",
+      "salient_attrs": { "first_day": "2026-08-26", "period_start": "07:45" }
+    },
+    {
+      "ts": "2026-08-13T11:05:00Z",
+      "kind": "decision",
+      "text": "Decided the phone policy this year is a hanging shoe rack by the door, numbered one through thirty, and no exceptions for the seniors.",
+      "salient_attrs": { "policy": "shoe rack phone pockets", "pockets": 30 }
+    }
+  ]
+}

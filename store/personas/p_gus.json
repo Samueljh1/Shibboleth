@@ -1,0 +1,121 @@
+{
+  "id": "u_gus",
+  "name": "Gus",
+  "profile": {
+    "role": "port logistics planner",
+    "city": "Long Beach",
+    "pet": "Roscoe, a beagle",
+    "commute": "a 1998 Toyota pickup, parks in Lot D",
+    "hobby": "amateur radio, callsign KJ6RTA"
+  },
+  "memories": [
+    {
+      "ts": "2026-08-06T06:40:00Z",
+      "kind": "event",
+      "text": "Roscoe started howling at four in the morning because the fog horn was running, and he will not be talked out of it no matter how many times it happens.",
+      "salient_attrs": { "pet": "Roscoe", "trigger": "fog horn" }
+    },
+    {
+      "ts": "2026-08-06T15:15:00Z",
+      "kind": "decision",
+      "text": "Decided to move the crane gang shift change from three o'clock to half past three, which pulled about forty minutes of idle time out of the berth window.",
+      "salient_attrs": { "shift_from": "15:00", "minutes_saved": 40 }
+    },
+    {
+      "ts": "2026-08-07T09:25:00Z",
+      "kind": "fact",
+      "text": "The Estrella Meridian is a fourteen thousand TEU box ship and she is the largest thing we have taken on Pier F this year.",
+      "salient_attrs": { "vessel": "Estrella Meridian", "teu": 14000 }
+    },
+    {
+      "ts": "2026-08-07T17:50:00Z",
+      "kind": "event",
+      "text": "Worked a reefer plug shortage and had to shuffle twenty-two containers between rows to get everything powered before the evening gate closed.",
+      "salient_attrs": { "issue": "reefer plugs", "containers_moved": 22 }
+    },
+    {
+      "ts": "2026-08-08T11:00:00Z",
+      "kind": "conversation",
+      "text": "My daughter Marisol asked whether ships get lonely, and then asked whether a telescope could see one from our roof, which is the actual thing she wants.",
+      "salient_attrs": { "daughter": "Marisol", "wants": "telescope" }
+    },
+    {
+      "ts": "2026-08-08T20:30:00Z",
+      "kind": "event",
+      "text": "Made contact with a station in Wellington on forty metres at half eight in the evening, which is the furthest I have got on the wire antenna in the back yard.",
+      "salient_attrs": { "band_m": 40, "contact": "Wellington" }
+    },
+    {
+      "ts": "2026-08-09T13:35:00Z",
+      "kind": "fact",
+      "text": "The pickup rolled over two hundred and sixty thousand miles on the 710 and I pulled onto the shoulder to take a photograph of the odometer.",
+      "salient_attrs": { "vehicle": "1998 Toyota pickup", "miles": 260000 }
+    },
+    {
+      "ts": "2026-08-09T18:00:00Z",
+      "kind": "event",
+      "text": "Took Marisol to the aquarium in Rancho Palos Verdes and she spent forty minutes at the moon jelly tank and eleven seconds at the sharks.",
+      "salient_attrs": { "daughter": "Marisol", "favourite": "moon jellies" }
+    },
+    {
+      "ts": "2026-08-10T07:45:00Z",
+      "kind": "decision",
+      "text": "Decided to hold two chassis pools rather than merge them, because the merged pool would have put every empty return on the same three gates.",
+      "salient_attrs": { "pools": 2, "rejected": "merged pool" }
+    },
+    {
+      "ts": "2026-08-10T16:20:00Z",
+      "kind": "conversation",
+      "text": "The gate supervisor Hector told me the new turn time board is showing an average of thirty-eight minutes and that drivers still do not believe it.",
+      "salient_attrs": { "colleague": "Hector", "turn_time_min": 38 }
+    },
+    {
+      "ts": "2026-08-11T08:05:00Z",
+      "kind": "fact",
+      "text": "I buy cardamom coffee from the cart in Lot D every morning and the man who runs it, Sasan, starts pouring when he sees the truck turn in.",
+      "salient_attrs": { "drink": "cardamom coffee", "vendor": "Sasan in Lot D" }
+    },
+    {
+      "ts": "2026-08-11T14:40:00Z",
+      "kind": "event",
+      "text": "A crane went down on bay nineteen for two and a half hours and we recovered the plan by pulling the last hundred and ten moves to the neighbouring gang.",
+      "salient_attrs": { "bay": 19, "moves_shifted": 110 }
+    },
+    {
+      "ts": "2026-08-12T13:50:00Z",
+      "kind": "decision",
+      "text": "Decided to give the Estrella Meridian the Thursday night window instead of Friday morning, because Friday's tide and the rail cutoff were going to collide.",
+      "salient_attrs": { "vessel": "Estrella Meridian", "window": "Thursday night" }
+    },
+    {
+      "ts": "2026-08-12T16:10:00Z",
+      "kind": "conversation",
+      "text": "Told the terminal manager that the bottleneck is not cranes, it is the empty stack on the east side, and I brought the seven day chart to prove it.",
+      "salient_attrs": { "bottleneck": "east empty stack", "chart_days": 7 }
+    },
+    {
+      "ts": "2026-08-12T19:30:00Z",
+      "kind": "event",
+      "text": "Grilled on the patio while Roscoe sat exactly where the smoke blew and refused to move, and Marisol timed how long he would last, which was nine minutes.",
+      "salient_attrs": { "pet": "Roscoe", "minutes": 9 }
+    },
+    {
+      "ts": "2026-08-13T05:50:00Z",
+      "kind": "event",
+      "text": "Came in before six because the pilot boat was early, and the fog was so thick on the bridge that I could only see the top two rows of boxes.",
+      "salient_attrs": { "arrival": "05:50", "weather": "fog" }
+    },
+    {
+      "ts": "2026-08-13T09:40:00Z",
+      "kind": "fact",
+      "text": "There are three vessels working today, two at Pier F and one at Pier G, and only Pier G has the gang I actually trust with the double cycle.",
+      "salient_attrs": { "vessels": 3, "trusted_gang": "Pier G" }
+    },
+    {
+      "ts": "2026-08-13T11:25:00Z",
+      "kind": "decision",
+      "text": "Decided to order Marisol the small refractor for her birthday and to keep it in the garage until then, because she goes through the closet every Sunday.",
+      "salient_attrs": { "gift": "refractor telescope", "hidden": "garage" }
+    }
+  ]
+}

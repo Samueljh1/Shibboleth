@@ -1,0 +1,121 @@
+{
+  "id": "u_femi",
+  "name": "Femi",
+  "profile": {
+    "role": "session bass player",
+    "city": "Atlanta",
+    "instrument": "a 1978 sunburst Fender Precision called The Cinder",
+    "commute": "a white Ford Transit van with a broken passenger door handle",
+    "hobby": "restoring cassette decks"
+  },
+  "memories": [
+    {
+      "ts": "2026-08-06T12:30:00Z",
+      "kind": "event",
+      "text": "Cut five tracks in one afternoon at Blue Fern in Decatur and the whole session ran on a click at ninety-two beats per minute.",
+      "salient_attrs": { "studio": "Blue Fern", "bpm": 92 }
+    },
+    {
+      "ts": "2026-08-06T21:00:00Z",
+      "kind": "fact",
+      "text": "The Nakamichi BX-100 has been in pieces on my kitchen table for eleven days and the new belts are still sitting in the envelope unopened.",
+      "salient_attrs": { "deck": "Nakamichi BX-100", "days_apart": 11 }
+    },
+    {
+      "ts": "2026-08-07T15:40:00Z",
+      "kind": "decision",
+      "text": "Decided to move The Cinder from flatwounds to half-rounds for this record, because the flats were disappearing under the organ in the low mids.",
+      "salient_attrs": { "strings_from": "flatwound", "strings_to": "half-round" }
+    },
+    {
+      "ts": "2026-08-07T23:30:00Z",
+      "kind": "event",
+      "text": "The van's passenger door handle finally came off in the drummer's hand outside the venue and he handed it to me like a relay baton.",
+      "salient_attrs": { "vehicle": "Ford Transit", "broken": "passenger door handle" }
+    },
+    {
+      "ts": "2026-08-08T14:20:00Z",
+      "kind": "conversation",
+      "text": "The producer, Nnamdi, asked me to play the whole bridge with my thumb instead of a pick, and he was right, so I did not tell him he was right.",
+      "salient_attrs": { "producer": "Nnamdi", "technique": "thumb" }
+    },
+    {
+      "ts": "2026-08-08T19:00:00Z",
+      "kind": "fact",
+      "text": "I drink ginger beer with no ice at every session because ice makes the can sweat onto the charts.",
+      "salient_attrs": { "drink": "ginger beer, no ice" }
+    },
+    {
+      "ts": "2026-08-09T11:15:00Z",
+      "kind": "conversation",
+      "text": "Called my mum in Lagos on Sunday morning and she walked me through the plantain again, insisting the oil has to smell like nothing before the first slice goes in.",
+      "salient_attrs": { "family": "mum in Lagos", "dish": "plantain" }
+    },
+    {
+      "ts": "2026-08-09T20:45:00Z",
+      "kind": "event",
+      "text": "Played a wedding in Marietta where the bride's father sang two songs with us and the second one was in Twi and nobody had the chart.",
+      "salient_attrs": { "gig": "Marietta wedding", "unplanned_songs": 2 }
+    },
+    {
+      "ts": "2026-08-10T13:10:00Z",
+      "kind": "decision",
+      "text": "Decided to turn down the six-week tour because it overlaps the record dates, and told my agent to keep me clear through the end of September.",
+      "salient_attrs": { "declined": "six week tour", "clear_until": "end of September" }
+    },
+    {
+      "ts": "2026-08-10T18:20:00Z",
+      "kind": "event",
+      "text": "Found a boxed Sony WM-D6C at an estate sale in Kirkwood and the seller thought it was a phone charger.",
+      "salient_attrs": { "found": "Sony WM-D6C", "location": "Kirkwood estate sale" }
+    },
+    {
+      "ts": "2026-08-11T10:00:00Z",
+      "kind": "fact",
+      "text": "The Cinder has a cigarette burn on the upper horn that was there when I bought it in 2009 and I have never once considered refinishing it.",
+      "salient_attrs": { "bass": "The Cinder", "mark": "cigarette burn on upper horn" }
+    },
+    {
+      "ts": "2026-08-11T16:35:00Z",
+      "kind": "event",
+      "text": "Broke a D string on take nine, which I have not done in about four years, and finished the take on the remaining three because the drummer would not stop.",
+      "salient_attrs": { "broke": "D string", "take": 9 }
+    },
+    {
+      "ts": "2026-08-12T14:05:00Z",
+      "kind": "decision",
+      "text": "Decided to track the whole record through the old Ampeg B-15 with a ribbon mic a foot back, and to stop bothering with the direct signal entirely.",
+      "salient_attrs": { "amp": "Ampeg B-15", "mic": "ribbon at one foot" }
+    },
+    {
+      "ts": "2026-08-12T17:20:00Z",
+      "kind": "conversation",
+      "text": "Told the engineer the room hum was coming from the fridge in the lounge and not the amp, and we tracked the rest of the afternoon with the fridge unplugged.",
+      "salient_attrs": { "hum_source": "lounge fridge", "fix": "unplugged" }
+    },
+    {
+      "ts": "2026-08-12T22:50:00Z",
+      "kind": "event",
+      "text": "Drove home down I-285 with the windows open because the van's air conditioning has been dead since June, and I still made it in twenty-five minutes.",
+      "salient_attrs": { "road": "I-285", "van_issue": "no air conditioning" }
+    },
+    {
+      "ts": "2026-08-13T08:10:00Z",
+      "kind": "event",
+      "text": "Restrung The Cinder with the new half-rounds at eight in the morning and let them settle for an hour before I even plugged in.",
+      "salient_attrs": { "strings": "half-round", "settle_hour": 1 }
+    },
+    {
+      "ts": "2026-08-13T09:55:00Z",
+      "kind": "fact",
+      "text": "There are seven charts in the folder for today's session and only two of them have the bass part actually written out.",
+      "salient_attrs": { "charts": 7, "written_bass": 2 }
+    },
+    {
+      "ts": "2026-08-13T11:40:00Z",
+      "kind": "conversation",
+      "text": "Nnamdi texted to say the singer wants the second verse dropped a whole tone, so I spent lunch rewriting my part in D flat and complaining about it.",
+      "salient_attrs": { "change": "down a whole tone", "new_key": "D flat" }
+    }
+  ]
+}

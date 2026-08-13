@@ -1,0 +1,121 @@
+{
+  "id": "u_ivo",
+  "name": "Ivo",
+  "profile": {
+    "role": "film archivist",
+    "city": "Montreal",
+    "workplace": "the Bellechasse film vault",
+    "commute": "Metro orange line to Place-d'Armes",
+    "hobby": "cyanotype printing on Sunday afternoons"
+  },
+  "memories": [
+    {
+      "ts": "2026-08-06T09:50:00Z",
+      "kind": "fact",
+      "text": "The cold vault runs at four degrees and thirty-eight percent humidity, and the logger on the north wall reads a full degree colder than the one by the door.",
+      "salient_attrs": { "vault_c": 4, "humidity_pct": 38 }
+    },
+    {
+      "ts": "2026-08-06T16:15:00Z",
+      "kind": "event",
+      "text": "Opened a can from the 1963 accession and found the leader had been spliced with masking tape by somebody who clearly meant well in about 1985.",
+      "salient_attrs": { "accession_year": 1963, "problem": "masking tape splice" }
+    },
+    {
+      "ts": "2026-08-07T11:20:00Z",
+      "kind": "decision",
+      "text": "Decided to scan the sixteen millimetre reel wet-gate at four K rather than dry at two K, which triples the time but hides the base scratches completely.",
+      "salient_attrs": { "format_mm": 16, "scan": "wet-gate 4K" }
+    },
+    {
+      "ts": "2026-08-07T18:45:00Z",
+      "kind": "event",
+      "text": "The landlord's cat Marguerite came in through the balcony door again and fell asleep on the box of my grandmother's letters.",
+      "salient_attrs": { "cat": "Marguerite", "owner": "landlord" }
+    },
+    {
+      "ts": "2026-08-08T10:05:00Z",
+      "kind": "conversation",
+      "text": "A researcher from Ghent emailed asking for the twelve minutes of Expo 67 street footage, and I had to tell her that reel is on the vinegar watch list.",
+      "salient_attrs": { "researcher_city": "Ghent", "footage": "Expo 67" }
+    },
+    {
+      "ts": "2026-08-08T15:30:00Z",
+      "kind": "fact",
+      "text": "I am translating my grandmother Zdenka's letters from Czech at a rate of about one a week, and I am currently stuck on a word that might be a nickname.",
+      "salient_attrs": { "grandmother": "Zdenka", "language": "Czech" }
+    },
+    {
+      "ts": "2026-08-09T13:00:00Z",
+      "kind": "event",
+      "text": "Exposed six cyanotypes of fern fronds on the balcony and the fifth one blew off the board into the alley before it had washed.",
+      "salient_attrs": { "prints": 6, "lost": 5 }
+    },
+    {
+      "ts": "2026-08-09T19:40:00Z",
+      "kind": "conversation",
+      "text": "The barista at Cafe Olimpico told me my macchiato order has been identical for four years and asked whether I was ever going to try anything else.",
+      "salient_attrs": { "cafe": "Cafe Olimpico", "drink": "macchiato" }
+    },
+    {
+      "ts": "2026-08-10T08:30:00Z",
+      "kind": "event",
+      "text": "Cycled up to the Jean-Talon market before the crowds and bought a flat of Quebec strawberries that turned out to be two days past their best.",
+      "salient_attrs": { "market": "Jean-Talon", "bought": "strawberries" }
+    },
+    {
+      "ts": "2026-08-10T17:10:00Z",
+      "kind": "decision",
+      "text": "Decided to re-house the entire 1970s newsreel series in vented polypropylene cans instead of the original metal, starting with the forty-one worst ones.",
+      "salient_attrs": { "cans": "vented polypropylene", "first_batch": 41 }
+    },
+    {
+      "ts": "2026-08-11T09:15:00Z",
+      "kind": "event",
+      "text": "The orange line was stopped at Berri for eight minutes because of a signal fault and the whole platform emptied onto the street to walk instead.",
+      "salient_attrs": { "line": "Metro orange", "delay_minutes": 8 }
+    },
+    {
+      "ts": "2026-08-11T14:50:00Z",
+      "kind": "fact",
+      "text": "There are two hundred and six cans on the vinegar watch list and eleven of them moved a full step on the A-D strips this quarter.",
+      "salient_attrs": { "watch_list": 206, "worsened": 11 }
+    },
+    {
+      "ts": "2026-08-12T13:35:00Z",
+      "kind": "decision",
+      "text": "Decided the autumn screening programme opens with the restored ferry footage rather than the parade reel, because the ferry has sound and the parade does not.",
+      "salient_attrs": { "opener": "ferry footage", "rejected": "parade reel" }
+    },
+    {
+      "ts": "2026-08-12T15:05:00Z",
+      "kind": "event",
+      "text": "Found a handwritten shot list folded inside can number thirty-one, dated the ninth of March 1968, and photographed it before I touched anything else.",
+      "salient_attrs": { "can": 31, "document_date": "1968-03-09" }
+    },
+    {
+      "ts": "2026-08-12T20:25:00Z",
+      "kind": "conversation",
+      "text": "My colleague Sylvie insisted the projector for the screening needs a new xenon lamp and I insisted it needs a new operator, and we both laughed but she is right.",
+      "salient_attrs": { "colleague": "Sylvie", "part": "xenon lamp" }
+    },
+    {
+      "ts": "2026-08-13T07:40:00Z",
+      "kind": "event",
+      "text": "Walked from Place-d'Armes in the rain without an umbrella and arrived with the notebook in my jacket completely dry and everything else soaked.",
+      "salient_attrs": { "station": "Place-d'Armes", "weather": "rain" }
+    },
+    {
+      "ts": "2026-08-13T09:30:00Z",
+      "kind": "fact",
+      "text": "The wet-gate scan of the sixteen millimetre reel is at fifty-two percent this morning and will not finish until sometime after four in the afternoon.",
+      "salient_attrs": { "scan_pct": 52, "eta": "after 16:00" }
+    },
+    {
+      "ts": "2026-08-13T11:00:00Z",
+      "kind": "decision",
+      "text": "Decided to keep the original masking tape splice in the archive box as an artefact rather than throw it out, and labelled the envelope with the date it was found.",
+      "salient_attrs": { "kept": "masking tape splice", "stored": "labelled envelope" }
+    }
+  ]
+}

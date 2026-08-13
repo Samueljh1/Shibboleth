@@ -32,6 +32,17 @@ _STOP = {
     "yours",
 }
 
+_NUMBER = re.compile(r"\d[\d,.:]*")
+_NUMBER_WORDS = {
+    "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+    "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen",
+    "seventeen", "eighteen", "nineteen", "twenty", "thirty", "forty", "fifty",
+    "sixty", "seventy", "eighty", "ninety", "hundred", "thousand", "dozen",
+    "first", "second", "third", "fourth", "fifth", "sixth", "seventh",
+    "eighth", "ninth", "tenth", "twice", "half",
+}
+_SENTENCE = re.compile(r"(?<=[.!?])\s+")
+
 LEAK_TOKEN_RATIO = 0.6
 """Share of a memory's distinctive tokens that, if echoed, counts as a leak."""
 
@@ -44,16 +55,48 @@ def content_tokens(text: str) -> list[str]:
     return [t for t in _WORD.findall((text or "").lower()) if len(t) > 3 and t not in _STOP]
 
 
+def _distinctive_marks(text: str) -> set[str]:
+    """Proper nouns and numbers — the tokens that ARE the answer.
+
+    Sentence-initial words are skipped: they are capitalised by position, not
+    because they name anything.
+    """
+    t = text or ""
+    marks = {m.group(0).lower() for m in _NUMBER.finditer(t)}
+    # Spelled-out numbers count too: "is it six?" leaks exactly as "is it 6?".
+    marks |= {w for w in _WORD.findall(t.lower()) if w in _NUMBER_WORDS}
+    for sentence in _SENTENCE.split(t):
+        words = sentence.split()
+        for w in words[1:]:  # skip the sentence-initial word
+            bare = w.strip(".,;:!?\"'()[]")
+            if len(bare) > 2 and bare[0].isupper() and not bare.isupper():
+                marks.add(bare.lower())
+    return marks
+
+
 def leaks_answer(
     question: str,
     memory_text: str,
     token_ratio: float = LEAK_TOKEN_RATIO,
     ngram: int = LEAK_NGRAM,
 ) -> bool:
-    """True if the question hands over the memory's content."""
+    """True if the question hands over the memory's content.
+
+    The ratio test alone is too permissive in practice: "Did you feel the
+    excitement when Priya joined the team?" echoes one token out of twenty and
+    scores ~0.05, yet it hands an impostor the entire answer. A single shared
+    proper noun or number IS the answer, so those are checked outright before
+    the ratio.
+    """
     distinct = set(content_tokens(memory_text))
     if not distinct:
         return False
+
+    # Proper nouns and numbers: any single one shared is a leak.
+    mem_marks = _distinctive_marks(memory_text)
+    if mem_marks & _distinctive_marks(question):
+        return True
+
     if len(distinct & set(content_tokens(question))) / len(distinct) >= token_ratio:
         return True
 

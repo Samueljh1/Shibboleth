@@ -4,10 +4,89 @@
   "profile": {
     "role": "founder",
     "city": "San Francisco",
-    "projects": ["Shibboleth", "Pier48 retrieval demo"],
-    "commute": "Muni T line"
+    "team_size": 6,
+    "commute": "Muni T line",
+    "hobby": "restoring a red 1972 Olivetti Valentine typewriter"
   },
   "memories": [
+    {
+      "ts": "2026-08-06T09:10:00Z",
+      "kind": "event",
+      "text": "Walked the Pier 48 floor with the event crew and measured the demo table at 180 centimetres, which is 20 short of what the projector throw needed.",
+      "salient_attrs": { "venue": "Pier 48", "table_cm": 180 }
+    },
+    {
+      "ts": "2026-08-06T16:25:00Z",
+      "kind": "decision",
+      "text": "Decided to hold the speaker embeddings at 256 dimensions instead of going to 512, because the extra 256 bought us nothing on the eight-voice test set.",
+      "salient_attrs": { "voice_dim": 256, "rejected_dim": 512 }
+    },
+    {
+      "ts": "2026-08-07T11:40:00Z",
+      "kind": "conversation",
+      "text": "My sister Nadia called from Lisbon at lunchtime to argue that the product name sounds like a password manager, and I told her that was exactly the point.",
+      "salient_attrs": { "sibling": "Nadia", "sibling_city": "Lisbon" }
+    },
+    {
+      "ts": "2026-08-07T18:15:00Z",
+      "kind": "fact",
+      "text": "Finally found a ribbon spool that fits the red Olivetti Valentine typewriter I bought at the Alameda flea market, and the letter e still prints half a shade light.",
+      "salient_attrs": { "typewriter": "Olivetti Valentine", "faulty_key": "e" }
+    },
+    {
+      "ts": "2026-08-08T08:35:00Z",
+      "kind": "event",
+      "text": "Ran four sets of the Dolores Park stairs before work and had to stop on the third because a loose dog decided to run them with me.",
+      "salient_attrs": { "exercise": "Dolores Park stairs", "sets": 4 }
+    },
+    {
+      "ts": "2026-08-08T14:50:00Z",
+      "kind": "decision",
+      "text": "Cut the onboarding flow from five screens down to two and moved the permission prompt to after the first success instead of before it.",
+      "salient_attrs": { "screens_before": 5, "screens_after": 2 }
+    },
+    {
+      "ts": "2026-08-09T10:05:00Z",
+      "kind": "conversation",
+      "text": "The barista at Ruby's on Minnesota Street told me they are discontinuing the cold brew in September, and I asked her to save me the last keg.",
+      "salient_attrs": { "cafe": "Ruby's on Minnesota Street", "drink": "cold brew" }
+    },
+    {
+      "ts": "2026-08-09T20:20:00Z",
+      "kind": "fact",
+      "text": "We are six people now that Priya started, and she is the only one who has ever shipped a vector index in production before.",
+      "salient_attrs": { "team_size": 6, "new_hire": "Priya" }
+    },
+    {
+      "ts": "2026-08-10T12:30:00Z",
+      "kind": "event",
+      "text": "Got to the Ferry Building farmers market at half past noon and the Blenheim apricots were already gone, so I bought two pounds of Santa Rosa plums instead.",
+      "salient_attrs": { "market": "Ferry Building", "bought": "Santa Rosa plums" }
+    },
+    {
+      "ts": "2026-08-10T17:45:00Z",
+      "kind": "decision",
+      "text": "Locked the demo script to exactly three beats and threw out the fourth one about audit logs because it added ninety seconds and no drama.",
+      "salient_attrs": { "demo_beats": 3, "cut_beat": "audit logs" }
+    },
+    {
+      "ts": "2026-08-11T09:00:00Z",
+      "kind": "event",
+      "text": "At standup we admitted recall had been stuck at 61 percent for three straight days and nobody had a theory that survived five minutes of questions.",
+      "salient_attrs": { "recall_pct": 61, "days_stuck": 3 }
+    },
+    {
+      "ts": "2026-08-11T15:20:00Z",
+      "kind": "conversation",
+      "text": "Spent twenty minutes on the phone with our advisor Marcus who insisted the entropy meter should count down in bits rather than show a percentage.",
+      "salient_attrs": { "advisor": "Marcus", "metric": "bits" }
+    },
+    {
+      "ts": "2026-08-12T13:05:00Z",
+      "kind": "decision",
+      "text": "Decided the projector shows only the entropy number and the candidate bars, and that every log line goes to a second screen the audience never sees.",
+      "salient_attrs": { "projector_shows": "entropy bits and bars", "screens": 2 }
+    },
     {
       "ts": "2026-08-12T15:40:00Z",
       "kind": "decision",
@@ -19,6 +98,12 @@
       "kind": "conversation",
       "text": "Told you about the burnt espresso at the Dogpatch cafe next to the pier, and that I switched to their cold brew instead.",
       "salient_attrs": { "drink": "cold brew", "place": "Dogpatch cafe" }
+    },
+    {
+      "ts": "2026-08-13T07:30:00Z",
+      "kind": "fact",
+      "text": "Packed the demo bag last night with two USB-C to HDMI adapters, a thirty foot extension cord, and the lapel mic that always drops its left channel.",
+      "salient_attrs": { "adapters": 2, "cord_feet": 30 }
     },
     {
       "ts": "2026-08-13T09:20:00Z",

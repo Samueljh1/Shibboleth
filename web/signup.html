@@ -1,0 +1,85 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#08090c">
+<title>Enroll &middot; Shibboleth</title>
+<link rel="stylesheet" href="/signup.css">
+
+<div id="banner" hidden></div>
+
+<header>
+  <h1>SHIBBOLETH</h1>
+  <p>Enroll in four steps. Nothing is stored until the last one.</p>
+</header>
+
+<main>
+
+  <!-- 1 ------------------------------------------------------------ -->
+  <section class="panel" id="s1">
+    <div class="steplabel"><b>1</b> COPY THE PROMPT</div>
+    <p class="lede">Paste this into ChatGPT, Claude or Gemini &mdash; whichever
+      assistant already knows you. It writes a briefing about you from your own
+      chat history.</p>
+    <pre id="prompt" class="promptbox">loading /prompt.txt&hellip;</pre>
+    <button id="copy" class="big primary">COPY PROMPT</button>
+  </section>
+
+  <!-- 2 ------------------------------------------------------------ -->
+  <section class="panel" id="s2">
+    <div class="steplabel"><b>2</b> PASTE THE RESULT</div>
+    <p class="lede">Paste the whole reply here. JSON, markdown fence, chatter
+      around it &mdash; all fine.</p>
+    <textarea id="raw" rows="7" placeholder='{ "name": "Ada", "memories": [ ... ] }'
+              autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
+    <button id="review" class="big">REVIEW</button>
+    <div id="warnings" class="warnings" hidden></div>
+  </section>
+
+  <!-- 3 ------------------------------------------------------------ -->
+  <section class="panel locked" id="s3">
+    <div class="steplabel"><b>3</b> REVIEW + EDIT</div>
+    <p class="lede">Your memory, your call. Edit anything. Delete anything.
+      <b class="ok">Nothing is stored until you press ENROLL ME.</b></p>
+    <div class="idrow">
+      <label>name <input id="f-name" placeholder="Ada" autocomplete="off"></label>
+      <label>role <input id="f-role" placeholder="founder" autocomplete="off"></label>
+      <label>city <input id="f-city" placeholder="San Francisco" autocomplete="off"></label>
+    </div>
+    <div class="counthead">
+      <span id="count" class="count">0 memories</span>
+      <button id="clearall" class="ghost">delete all</button>
+    </div>
+    <ul id="mems" class="mems"></ul>
+    <p id="empty" class="lede dim" hidden>No memories left. Go back to step 2 and
+      paste again, or enroll with none (questioning won't work).</p>
+  </section>
+
+  <!-- 4 ------------------------------------------------------------ -->
+  <section class="panel locked" id="s4">
+    <div class="steplabel"><b>4</b> RECORD YOUR VOICE + ENROLL</div>
+    <p class="lede">Hold the button and say anything for about five seconds.
+      This narrows the search to you. It is optional &mdash; you can enroll
+      without it.</p>
+    <div class="reczone">
+      <button id="rec" class="big rec"><span class="dot"></span><span id="reclabel">HOLD TO RECORD</span></button>
+      <div class="recmeta">
+        <span id="rectime" class="timer">0.0s</span>
+        <span id="recstate" class="recstate">no audio yet</span>
+      </div>
+    </div>
+    <button id="enroll" class="big primary">ENROLL ME</button>
+    <p class="lede dim small">Your audio becomes a 256-number voiceprint. The
+      recording itself is never stored.</p>
+  </section>
+
+  <!-- done --------------------------------------------------------- -->
+  <section class="panel done" id="s5" hidden>
+    <div class="steplabel ok"><b>&check;</b> YOU'RE ENROLLED</div>
+    <div id="uid" class="uid">u_</div>
+    <div id="donemeta" class="donemeta"></div>
+    <a class="big primary golink" href="/">GO TO THE DEMO &rarr;</a>
+  </section>
+
+</main>
+
+<script src="/signup.js"></script>

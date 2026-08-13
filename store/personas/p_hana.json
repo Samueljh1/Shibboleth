@@ -1,0 +1,121 @@
+{
+  "id": "u_hana",
+  "name": "Hana",
+  "profile": {
+    "role": "marine field biologist",
+    "city": "Seattle",
+    "pet": "Sputnik, a rescued budgie",
+    "commute": "nine miles on the Burke-Gilman trail on a steel Surly",
+    "field_site": "eelgrass transects in Padilla Bay"
+  },
+  "memories": [
+    {
+      "ts": "2026-08-06T05:30:00Z",
+      "kind": "event",
+      "text": "Launched the skiff, which is called Puffin, at half five and the outboard needed nine pulls before it caught.",
+      "salient_attrs": { "boat": "Puffin", "pulls": 9 }
+    },
+    {
+      "ts": "2026-08-06T14:45:00Z",
+      "kind": "fact",
+      "text": "We run twelve eelgrass transects in Padilla Bay and transect seven is the only one that has gained shoot density two years running.",
+      "salient_attrs": { "transects": 12, "improving": 7 }
+    },
+    {
+      "ts": "2026-08-07T10:15:00Z",
+      "kind": "decision",
+      "text": "Decided to move the sampling window two hours earlier so we catch the minus one point four foot low tide instead of fighting the flood.",
+      "salient_attrs": { "shift_hours": 2, "tide_ft": -1.4 }
+    },
+    {
+      "ts": "2026-08-07T19:05:00Z",
+      "kind": "event",
+      "text": "Sputnik learned to imitate the microwave finishing beep and now nobody in the house trusts the microwave.",
+      "salient_attrs": { "pet": "Sputnik", "mimics": "microwave beep" }
+    },
+    {
+      "ts": "2026-08-08T09:00:00Z",
+      "kind": "event",
+      "text": "The bell on my Surly cracked clean in half on the Fremont section of the trail and I rang it anyway for the rest of the ride out of habit.",
+      "salient_attrs": { "bike": "steel Surly", "broken": "bell" }
+    },
+    {
+      "ts": "2026-08-08T16:30:00Z",
+      "kind": "conversation",
+      "text": "Argued with my co-lead Priyanka about whether to keep the quadrat at half a metre or go to a quarter, and we agreed to run both on transect three.",
+      "salient_attrs": { "colleague": "Priyanka", "quadrat_m": 0.5 }
+    },
+    {
+      "ts": "2026-08-09T12:10:00Z",
+      "kind": "fact",
+      "text": "My mate goes in a dented steel thermos with a strip of orange survey tape wrapped around the neck so it does not get mixed up with the sample bottles.",
+      "salient_attrs": { "drink": "yerba mate", "marker": "orange survey tape" }
+    },
+    {
+      "ts": "2026-08-09T18:40:00Z",
+      "kind": "event",
+      "text": "Spent the evening rewiring the trailer lights on my dad's boat trailer and got the left indicator working but not the right.",
+      "salient_attrs": { "task": "trailer lights", "still_broken": "right indicator" }
+    },
+    {
+      "ts": "2026-08-10T11:35:00Z",
+      "kind": "event",
+      "text": "Counted forty-one Dungeness crab in the shallows on one pass, which is more than the whole of last August put together.",
+      "salient_attrs": { "species": "Dungeness crab", "count": 41 }
+    },
+    {
+      "ts": "2026-08-10T20:15:00Z",
+      "kind": "decision",
+      "text": "Decided to write the paper around the sediment result rather than the shoot counts, because the sediment story is the one that actually surprised us.",
+      "salient_attrs": { "paper_focus": "sediment", "dropped_focus": "shoot counts" }
+    },
+    {
+      "ts": "2026-08-11T07:55:00Z",
+      "kind": "event",
+      "text": "The GoPro flooded on the second drop because I did not seat the gasket, and I lost about forty minutes of underwater footage.",
+      "salient_attrs": { "equipment": "GoPro", "cause": "unseated gasket" }
+    },
+    {
+      "ts": "2026-08-11T15:45:00Z",
+      "kind": "conversation",
+      "text": "A tribal shellfish biologist named Owen showed me where the eelgrass edge used to sit in the nineties and it is about thirty metres out from where it is now.",
+      "salient_attrs": { "contact": "Owen", "edge_shift_m": 30 }
+    },
+    {
+      "ts": "2026-08-12T13:30:00Z",
+      "kind": "decision",
+      "text": "Decided to swap the drone survey for a kayak transect on Thursday because the forecast has the wind at eighteen knots after two in the afternoon.",
+      "salient_attrs": { "method_from": "drone", "wind_kt": 18 }
+    },
+    {
+      "ts": "2026-08-12T16:20:00Z",
+      "kind": "event",
+      "text": "Waded out and found a purple sea star on the riprap, which is the first one I have seen at that site since 2023, and I sat down in the water for a minute.",
+      "salient_attrs": { "species": "purple sea star", "last_seen": 2023 }
+    },
+    {
+      "ts": "2026-08-12T21:00:00Z",
+      "kind": "fact",
+      "text": "The freezer in the lab has three hundred and sixty sample vials in it and exactly one of them has a label that has come off, which is now my problem.",
+      "salient_attrs": { "vials": 360, "unlabelled": 1 }
+    },
+    {
+      "ts": "2026-08-13T06:20:00Z",
+      "kind": "event",
+      "text": "Rode the Burke-Gilman in at twenty past six and got stuck behind a heron standing in the middle of the trail near Matthews Beach for a full minute.",
+      "salient_attrs": { "trail": "Burke-Gilman", "obstacle": "heron" }
+    },
+    {
+      "ts": "2026-08-13T08:40:00Z",
+      "kind": "conversation",
+      "text": "Told Priyanka that the quarter metre quadrat gave us tighter numbers on transect three, so we are switching all twelve over from next week.",
+      "salient_attrs": { "quadrat_new_m": 0.25, "transects": 12 }
+    },
+    {
+      "ts": "2026-08-13T10:30:00Z",
+      "kind": "fact",
+      "text": "Sputnik will only take millet from my left hand, and if you offer it with the right hand he turns his back and sulks on the far perch.",
+      "salient_attrs": { "pet": "Sputnik", "quirk": "left hand only" }
+    }
+  ]
+}

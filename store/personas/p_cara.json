@@ -1,0 +1,121 @@
+{
+  "id": "u_cara",
+  "name": "Cara",
+  "profile": {
+    "role": "pediatric ICU nurse",
+    "city": "Chicago",
+    "pet": "Miso, a black shorthair cat",
+    "commute": "Blue Line to Damen, then a twenty minute walk",
+    "hobby": "open water swimming at Ohio Street Beach"
+  },
+  "memories": [
+    {
+      "ts": "2026-08-06T07:05:00Z",
+      "kind": "event",
+      "text": "Came off a night shift and swam one point two miles at Ohio Street Beach before the lake filled up with the seven o'clock triathlon club.",
+      "salient_attrs": { "swim_miles": 1.2, "beach": "Ohio Street" }
+    },
+    {
+      "ts": "2026-08-06T15:30:00Z",
+      "kind": "fact",
+      "text": "Miso has chewed through three phone charger cords since June and I have started running them behind the radiator where she cannot reach.",
+      "salient_attrs": { "pet": "Miso", "cords_chewed": 3 }
+    },
+    {
+      "ts": "2026-08-07T13:40:00Z",
+      "kind": "decision",
+      "text": "Decided to relabel every drawer on the crash cart with colour tape, green for airway and orange for lines, because two of us kept opening the wrong one.",
+      "salient_attrs": { "green_drawer": "airway", "orange_drawer": "lines" }
+    },
+    {
+      "ts": "2026-08-07T22:15:00Z",
+      "kind": "conversation",
+      "text": "My brother Teo called from his garage to say he had finally got the flippers working on the 1979 pinball machine he has been rebuilding for a year.",
+      "salient_attrs": { "sibling": "Teo", "hobby": "pinball restoration" }
+    },
+    {
+      "ts": "2026-08-08T09:20:00Z",
+      "kind": "event",
+      "text": "The Blue Line was single tracking at Division so I got off at Damen and walked the last twenty minutes in the rain without a hood.",
+      "salient_attrs": { "commute": "Blue Line", "walk_minutes": 20 }
+    },
+    {
+      "ts": "2026-08-08T18:50:00Z",
+      "kind": "fact",
+      "text": "I keep roasted barley tea in a dented green thermos that has a sticker of a whale on the base, and it holds heat for about nine hours.",
+      "salient_attrs": { "drink": "roasted barley tea", "thermos": "dented green" }
+    },
+    {
+      "ts": "2026-08-09T14:10:00Z",
+      "kind": "event",
+      "text": "Spent my afternoon off at the Ravenswood farmers market and came home with a pound of sour cherries and a chipped enamel jug for four dollars.",
+      "salient_attrs": { "market": "Ravenswood", "bought": "sour cherries" }
+    },
+    {
+      "ts": "2026-08-09T20:00:00Z",
+      "kind": "decision",
+      "text": "Decided to take the Tuesday and Thursday nights off the rotation in September so I can actually go to my nephew's soccer games.",
+      "salient_attrs": { "nights_off": "Tuesday and Thursday", "month": "September" }
+    },
+    {
+      "ts": "2026-08-10T11:30:00Z",
+      "kind": "conversation",
+      "text": "Told the two new grads that the infusion pump on bed four beeps a half second early and that they should trust the number on the screen, not the sound.",
+      "salient_attrs": { "trainees": 2, "quirk": "bed four pump beeps early" }
+    },
+    {
+      "ts": "2026-08-10T16:45:00Z",
+      "kind": "event",
+      "text": "My car, a 2011 Honda Fit I call Pickle, needed a jump in the hospital garage and a security guard named Ernesto did it with a battery pack from his cart.",
+      "salient_attrs": { "car": "Pickle, 2011 Honda Fit", "helper": "Ernesto" }
+    },
+    {
+      "ts": "2026-08-11T08:15:00Z",
+      "kind": "fact",
+      "text": "My nephew Oscar turns seven on the twenty-ninth and has asked for a telescope, a bearded dragon, and a trip to the aquarium, in that order.",
+      "salient_attrs": { "nephew": "Oscar", "turns": 7 }
+    },
+    {
+      "ts": "2026-08-11T21:40:00Z",
+      "kind": "event",
+      "text": "Swapped shifts with Danielle so she could go to her sister's wedding in Milwaukee, which means I work eleven of the next fourteen nights.",
+      "salient_attrs": { "colleague": "Danielle", "nights_worked": 11 }
+    },
+    {
+      "ts": "2026-08-12T13:20:00Z",
+      "kind": "decision",
+      "text": "Decided to switch the unit handover from a whiteboard to a printed one page sheet, because the whiteboard kept getting wiped by the cleaning crew at five.",
+      "salient_attrs": { "handover_from": "whiteboard", "handover_to": "printed sheet" }
+    },
+    {
+      "ts": "2026-08-12T16:05:00Z",
+      "kind": "conversation",
+      "text": "The unit manager asked me to run the orientation week for the new cohort of eight nurses starting the first Monday of September, and I said yes before thinking.",
+      "salient_attrs": { "cohort_size": 8, "role": "orientation lead" }
+    },
+    {
+      "ts": "2026-08-12T23:30:00Z",
+      "kind": "event",
+      "text": "Started my night shift at half eleven and found somebody had finally fixed the flickering light over the second sink after four months of complaints.",
+      "salient_attrs": { "shift_start": "23:30", "fixed": "sink light" }
+    },
+    {
+      "ts": "2026-08-13T07:45:00Z",
+      "kind": "event",
+      "text": "Walked out into fog so thick I could not see the top of the parking structure, and Miso was sitting on the windowsill waiting when I got in.",
+      "salient_attrs": { "weather": "heavy fog", "pet": "Miso" }
+    },
+    {
+      "ts": "2026-08-13T09:10:00Z",
+      "kind": "fact",
+      "text": "I sleep with blackout curtains and a fan set to the middle speed, and I have learned to fall asleep by ten past nine in the morning.",
+      "salient_attrs": { "sleep_start": "09:10", "fan_speed": "medium" }
+    },
+    {
+      "ts": "2026-08-13T10:20:00Z",
+      "kind": "conversation",
+      "text": "Texted Teo that I would drive up on Sunday to help him carry the pinball backglass, on the condition that he feeds me his terrible chili.",
+      "salient_attrs": { "sibling": "Teo", "plan_day": "Sunday" }
+    }
+  ]
+}
