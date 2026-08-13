@@ -30,19 +30,45 @@ _PHRASE_SYSTEM = (
     "answer: no names, numbers, places or decisions taken from the memory.\n"
     "- Refer to it obliquely by time and context ('yesterday afternoon', "
     "'on your commute') so only someone who was there can answer.\n"
+    "- MUST be an open question that forces the speaker to supply the detail. "
+    "Begin with What, Which, Who, Where, When or How.\n"
+    "- NEVER ask a yes/no question. Do not begin with Did, Do, Was, Were, Is, "
+    "Are, Have, Has, Had, Can, Could, Would, Will or Should. A yes/no question "
+    "is useless here: 'yes' proves nothing and cannot be graded.\n"
     "- One sentence, under 20 words, natural spoken English.\n"
     "- Output the question only. No preamble, no quotes."
 )
 
+_YES_NO_OPENERS = (
+    "did", "do", "does", "was", "were", "is", "are", "have", "has", "had",
+    "can", "could", "would", "will", "should", "am",
+)
+
+
+def is_yes_no(question: str) -> bool:
+    """A closed question cannot elicit a gradeable specific -- reject it.
+
+    This is the bug that false-rejected a genuine user on stage: asked "Did you
+    feel differently after reading that essay?", they answered truthfully and
+    conversationally, the grader found none of the memory's specifics in it, and
+    marked NO. The question never asked for a specific.
+    """
+    first = (question or "").strip().lstrip("\"'").split(" ")[0].strip(",.?!").lower()
+    return first in _YES_NO_OPENERS
+
 _GRADE_SYSTEM = (
-    "You grade whether an ANSWER is consistent with a stored MEMORY the "
-    "speaker should personally recall.\n"
+    "You grade whether an ANSWER shows the speaker genuinely remembers a stored "
+    "MEMORY. You are given the QUESTION that was asked.\n"
     "Reply with exactly one word: YES or NO.\n"
-    "YES only if the answer matches the memory's specifics (the right "
-    "decision, person, place, number or outcome).\n"
-    "NO if it is vague, hedged, generic, evasive, says 'I don't remember', or "
-    "contradicts the memory. Plausible-sounding but unspecific is NO — an "
-    "impostor's answer sounds exactly like that."
+    "Judge the answer against WHAT THE QUESTION ASKED FOR. Do not demand a "
+    "detail the question never requested.\n"
+    "YES if the answer is consistent with the memory and adds something only "
+    "someone who lived it would say — the right decision, person, place, "
+    "number, outcome, reason or feeling. Partial recall is YES: real people "
+    "recall the gist and paraphrase. Casual, conversational phrasing is YES.\n"
+    "NO if it contradicts the memory, says 'I don't remember', or is so generic "
+    "it would fit almost anyone's week. A bare 'yes' or 'no' with nothing else "
+    "is NO — it carries no evidence either way."
 )
 
 
@@ -72,7 +98,9 @@ class OpenRouterLlm:
             return ""  # engine falls back to a templated question
         return out.strip().strip('"').splitlines()[0] if out.strip() else ""
 
-    def factual_check(self, answer: str, memory_text: str) -> bool:
+    def factual_check(
+        self, answer: str, memory_text: str, question: str | None = None
+    ) -> bool:
         """Strict: vague or hedged answers are False. This is what catches clones.
 
         Raises on transport failure — see the module docstring.

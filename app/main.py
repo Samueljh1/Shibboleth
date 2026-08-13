@@ -78,6 +78,8 @@ def _build() -> tuple[dict, dict[str, str]]:
             tau_id=settings.tau_id,
             tau_reject=settings.tau_reject,
             max_questions=settings.max_questions,
+            min_questions=settings.min_questions,
+            prior_temp=settings.prior_temp,
         )
         # Constructing a stub succeeds — only the methods raise. Probe one so
         # /health tells the truth and endpoints 503 instead of 500.

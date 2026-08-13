@@ -15,7 +15,16 @@ import requests
 from app.config import Settings
 
 API = "https://api.elevenlabs.io/v1/text-to-speech"
-DEFAULT_VOICE = "21m00Tcm4TlvDq8ikWAM"  # Rachel, on every free account
+# Free accounts are blocked from "library" voices (402 paid_plan_required);
+# these are usable on a free key. Verified against the hackathon key.
+FREE_VOICES = [
+    "pNInz6obpgDQGcFmaJgB",  # Adam
+    "ErXwobaYiN019PkySvjV",  # Antoni
+    "nPczCjzI2devNBz1zQrb",  # Brian
+    "EXAVITQu4vr4xnSDxMaL",  # Bella
+    "Xb7hH8MSUJpSbSDYk0k2",  # Alice
+]
+DEFAULT_VOICE = FREE_VOICES[0]
 MODEL = "eleven_flash_v2_5"  # lowest latency; this sits in the live loop
 TIMEOUT = 12
 
@@ -44,6 +53,12 @@ class ElevenLabsTts:
             },
             timeout=TIMEOUT,
         )
+        if r.status_code == 402 and self.voice_id != FREE_VOICES[0]:
+            # Configured voice needs a paid plan. Fall back once, permanently,
+            # rather than losing every spoken question for the rest of the demo.
+            print(f"[tts] voice {self.voice_id} needs a paid plan; falling back")
+            self.voice_id = FREE_VOICES[0]
+            return self.speak(text)
         if r.status_code != 200:
             raise RuntimeError(f"elevenlabs {r.status_code}: {r.text[:200]}")
         return r.content

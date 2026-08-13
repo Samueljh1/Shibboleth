@@ -20,8 +20,9 @@
     <p class="lede">Paste this into ChatGPT, Claude or Gemini &mdash; whichever
       assistant already knows you. It writes a briefing about you from your own
       chat history.</p>
-    <pre id="prompt" class="promptbox">loading /prompt.txt&hellip;</pre>
-    <button id="copy" class="big primary">COPY PROMPT</button>
+    <pre id="prompt" class="promptbox loading" aria-busy="true">loading the prompt from the server&hellip;</pre>
+    <button id="promptretry" class="big" hidden>RETRY LOADING THE PROMPT</button>
+    <button id="copy" class="big primary" disabled>LOADING PROMPT&hellip;</button>
   </section>
 
   <!-- 2 ------------------------------------------------------------ -->
@@ -32,6 +33,7 @@
     <textarea id="raw" rows="7" placeholder='{ "name": "Ada", "memories": [ ... ] }'
               autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
     <button id="review" class="big">REVIEW</button>
+    <div id="review-pend" class="pend" aria-live="polite"></div>
     <div id="warnings" class="warnings" hidden></div>
   </section>
 
@@ -68,6 +70,7 @@
       </div>
     </div>
     <button id="enroll" class="big primary">ENROLL ME</button>
+    <div id="enroll-pend" class="pend" aria-live="polite"></div>
     <p class="lede dim small">Your audio becomes a 256-number voiceprint. The
       recording itself is never stored.</p>
   </section>

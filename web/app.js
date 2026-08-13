@@ -72,6 +72,82 @@ const b64 = (blob) =>
     fr.readAsDataURL(blob);
   });
 
+// --- pending feedback ------------------------------------------------------
+// The server only answers at the end, so the step list advances on a timer.
+// Wording stays in the present tense: it says what is happening, never "done".
+const REDUCED = !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+
+function stage(el, steps) {
+  let i = 0;
+  let timer = null;
+  const paint = () => {
+    el.innerHTML =
+      steps
+        .map(
+          ([label], k) =>
+            `<span class="st ${k < i ? "done" : k === i ? "now" : ""}">` +
+            `<i class="pip"></i>${esc(label)}${k === i ? "&hellip;" : ""}</span>`
+        )
+        .join("") + '<i class="sweep"></i>';
+  };
+  const queue = () => {
+    if (i >= steps.length - 1) return;
+    timer = setTimeout(() => {
+      i++;
+      paint();
+      queue();
+    }, steps[i][1]);
+  };
+  el.className = "stage";
+  el.hidden = false;
+  paint();
+  queue();
+  const stop = () => clearTimeout(timer);
+  return {
+    hide() {
+      stop();
+      el.hidden = true;
+      el.innerHTML = "";
+      el.className = "stage";
+    },
+    ok(msg, ms = 7000) {
+      stop();
+      el.className = "stage ok";
+      el.innerHTML = `<span class="st done"><i class="pip"></i>${esc(msg)}</span>`;
+      setTimeout(() => {
+        if (el.className === "stage ok") this.hide();
+      }, ms);
+    },
+    fail(msg) {
+      stop();
+      el.className = "stage bad";
+      el.innerHTML = `<span class="st bad"><i class="pip"></i>${esc(msg)}</span>`;
+    },
+  };
+}
+
+const errText = (e) => (e && e.message ? String(e.message) : "request failed");
+
+// disable + visibly mark the control that fired the request; returns the undo
+function busyBtn(btn, label) {
+  const node = btn.querySelector(".reclabel") || btn;
+  const was = node.textContent;
+  if (label) node.textContent = label;
+  btn.classList.add("busy");
+  btn.disabled = true;
+  return () => {
+    btn.classList.remove("busy");
+    btn.disabled = false;
+    node.textContent = was;
+  };
+}
+
+function setStale(on) {
+  $("entropy").classList.toggle("stale", on);
+  $("bars").classList.toggle("stale", on);
+  document.body.classList.toggle("working", on);
+}
+
 // --- mic (hold to record) -------------------------------------------------
 function pickMime() {
   const opts = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/ogg"];
@@ -233,11 +309,33 @@ document.addEventListener("keyup", (e) => {
 // --- TTS ------------------------------------------------------------------
 let speakerOn = true;
 let player = null;
+let audioState = "idle"; // idle | loading | playing | none (no TTS for this question)
+
+function paintSpk() {
+  const b = $("spk");
+  b.classList.toggle("on", speakerOn && audioState !== "none");
+  b.classList.toggle("loading", audioState === "loading");
+  b.classList.toggle("playing", audioState === "playing");
+  b.textContent = !speakerOn
+    ? "SPEAKER OFF"
+    : audioState === "loading"
+    ? "LOADING VOICE…"
+    : audioState === "playing"
+    ? "▶ SPEAKING"
+    : "SPEAKER ON";
+  // audio may legitimately be absent (no TTS key) — say so, quietly, not as an error
+  $("spk-note").textContent = audioState === "none" ? "text only · no voice for this one" : "";
+}
+function setAudioState(s) {
+  audioState = s;
+  paintSpk();
+}
+
 $("spk").onclick = () => {
   speakerOn = !speakerOn;
-  $("spk").classList.toggle("on", speakerOn);
-  $("spk").textContent = speakerOn ? "SPEAKER ON" : "SPEAKER OFF";
   if (!speakerOn && player) player.pause();
+  if (audioState !== "none") audioState = "idle";
+  paintSpk();
 };
 $("replay").onclick = () => play(lastQuestionAudio, true);
 
@@ -253,14 +351,23 @@ function audioMime(s) {
 
 function play(audio, force) {
   if (audio) lastQuestionAudio = audio;
+  const src = force ? lastQuestionAudio : audio;
   $("replay").disabled = !lastQuestionAudio;
-  if (!lastQuestionAudio) return; // no TTS wired — text only, silently
-  if (!speakerOn && !force) return;
+  if (player) {
+    player.onplaying = player.onended = player.onpause = player.onerror = null;
+    player.pause();
+  }
+  if (!src) return setAudioState(force ? "idle" : "none"); // no TTS wired — text only
+  if (!speakerOn && !force) return setAudioState("idle");
   try {
-    if (player) player.pause();
-    player = new Audio(`data:${audioMime(lastQuestionAudio)};base64,` + lastQuestionAudio);
-    player.play().catch(() => {});
-  } catch {}
+    setAudioState("loading");
+    player = new Audio(`data:${audioMime(src)};base64,` + src);
+    player.onplaying = () => setAudioState("playing");
+    player.onended = player.onpause = player.onerror = () => setAudioState("idle");
+    player.play().catch(() => setAudioState("idle"));
+  } catch {
+    setAudioState("idle");
+  }
 }
 
 // --- flow -----------------------------------------------------------------
@@ -273,7 +380,15 @@ $("go").onclick = async () => {
   hideOverlay();
   resetRun();
   busy = true;
-  $("go").disabled = true;
+  setStale(true);
+  const undo = [busyBtn($("go"), "AUTHENTICATING"), busyBtn($("rec"))];
+  $("claimed").disabled = true;
+  const st = stage($("start-status"), [
+    ["embedding your voice", 1100],
+    ["searching enrolled voiceprints", 1500],
+    ["choosing the first question", 0],
+  ]);
+  const cst = stage($("cand-status"), [["ranking every enrolled voice", 0]]);
   try {
     const d = await post("/session/start", {
       audio_b64: startAudio,
@@ -281,32 +396,58 @@ $("go").onclick = async () => {
     });
     sessionId = d.session._id || d.session.id;
     clearBanner();
+    st.hide();
+    cst.hide();
     render(d.session, d.first_question, null);
     play(d.question_audio_b64);
     $("answer").focus();
-  } catch {
-    /* banner already shown */
+  } catch (e) {
+    st.fail(errText(e));
+    cst.hide();
   } finally {
     busy = false;
-    $("go").disabled = false;
+    setStale(false);
+    undo.forEach((f) => f());
+    $("claimed").disabled = false;
   }
 };
 
 async function submitAnswer(payload) {
   if (!sessionId || busy) return;
   busy = true;
-  $("send").disabled = true;
+  setStale(true); // the posterior on screen is about to be replaced — do not read it
+  const spoken = !!payload.audio_b64;
+  const undo = [busyBtn($("send"), "GRADING"), busyBtn($("rec-ans"), "SENT")];
+  const ansPh = $("answer").placeholder;
+  $("answer").disabled = true;
+  $("answer").placeholder = "sending your answer…";
+  $("question").classList.add("pending");
+  const steps = [];
+  if (spoken) steps.push(["transcribing your answer", 1600]); // typed answers skip this
+  steps.push(["checking it against stored memory", 2000]);
+  steps.push(["updating the posterior", 1600]);
+  steps.push(["choosing the next question", 0]);
+  const st = stage($("ans-status"), steps);
   try {
     const d = await post("/session/answer", { session_id: sessionId, ...payload });
+    st.hide();
     $("answer").value = "";
     render(d.session, d.next_question, d.result);
-    play(d.question_audio_b64);
+    if (d.result) setAudioState("idle");
+    else play(d.question_audio_b64);
     if (d.next_question) $("answer").focus();
-  } catch {
-    /* banner already shown */
+  } catch (e) {
+    st.fail(errText(e));
   } finally {
     busy = false;
-    $("send").disabled = false;
+    setStale(false);
+    $("question").classList.remove("pending");
+    undo.forEach((f) => f());
+    $("answer").placeholder = ansPh;
+    // render() disables the box when the session is over — respect that
+    $("answer").disabled = !sessionId;
+    $("send").disabled = !sessionId;
+    $("rec-ans").disabled = !sessionId;
   }
 }
 
@@ -323,22 +464,43 @@ $("answer").addEventListener("keydown", (e) => {
 
 $("wipe").onclick = async () => {
   const id = $("wipe-id").value.trim();
-  if (!id) return;
+  if (!id) {
+    banner("type a user id (or click a chip above) before wiping", "warn");
+    return;
+  }
+  const undo = busyBtn($("wipe"), "WIPING");
+  const st = stage($("wipe-status"), [
+    [`deleting every stored memory for ${id}`, 1400],
+    ["refreshing the enrolled list", 0],
+  ]);
   try {
     const d = await post("/session/wipe", { user_id: id });
+    st.ok(`DELETED ${d.deleted} memories for ${nameOf(id)} — they can no longer authenticate`);
     banner(
       `WIPED ${d.deleted} memories for ${nameOf(id)} — they can no longer authenticate`,
       "ok"
     );
-    loadEnrolled();
-  } catch {}
+    await loadEnrolled();
+  } catch (e) {
+    st.fail(errText(e));
+  } finally {
+    undo();
+  }
 };
 
 function resetRun() {
   sessionId = null;
   startBits = null;
+  shownBits = null;
   lastQuestionAudio = null;
   currentOwner = null;
+  setAudioState("idle");
+  ["start-status", "ans-status", "cand-status"].forEach((id) => {
+    $(id).hidden = true;
+    $(id).className = "stage";
+  });
+  $("send").disabled = false;
+  $("rec-ans").disabled = false;
   $("replay").disabled = true;
   $("log").innerHTML = "";
   $("bars").innerHTML = "";
@@ -356,12 +518,44 @@ function resetRun() {
 
 const nameOf = (uid) => names[uid] || uid;
 
+// Display-only fix for question templates that join a phrase which already
+// carries its own preposition: "Thinking back to on Sunday" -> "...to Sunday".
+const PREP = "about|above|across|after|around|at|before|behind|by|during|for|from|in|inside|into|near|of|on|over|through|to|under|with";
+const tidyQ = (s) =>
+  String(s ?? "")
+    .replace(new RegExp(`\\b(${PREP})\\s+(?:${PREP})\\s+`, "gi"), "$1 ")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+
+// count up/down to the new entropy so the change is visible, not a jump cut
+let shownBits = null;
+function setBits(to) {
+  const el = $("bits");
+  const from = shownBits;
+  shownBits = to;
+  el.classList.toggle("zeroed", to < 0.05);
+  if (REDUCED || from === null || Math.abs(to - from) < 0.005) {
+    el.textContent = to.toFixed(2);
+    return;
+  }
+  el.classList.remove("tick");
+  void el.offsetWidth;
+  el.classList.add("tick");
+  const t0 = performance.now();
+  const step = (t) => {
+    const k = Math.min(1, (t - t0) / 550);
+    el.textContent = (from + (to - from) * (1 - Math.pow(1 - k, 3))).toFixed(2);
+    if (k < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
 // --- the money visual -----------------------------------------------------
 function render(session, question, result) {
+  setStale(false); // fresh numbers have landed — undim, then animate to them
   const bits = Number(session.entropy_bits ?? 0);
   if (startBits === null) startBits = Math.max(bits, 0.001);
-  $("bits").textContent = bits.toFixed(2);
-  $("bits").classList.toggle("zeroed", bits < 0.05);
+  setBits(bits);
   $("bitsmax").textContent = `of ${startBits.toFixed(2)} at the start`;
   const pct = Math.max(0, Math.min(100, (bits / startBits) * 100));
   $("meter-fill").style.width = pct + "%";
@@ -383,7 +577,7 @@ function render(session, question, result) {
   const asked = session.asked || [];
   const n = asked.length + 1;
   if (question) {
-    $("question").textContent = question.question_text;
+    $("question").textContent = tidyQ(question.question_text);
     $("question").classList.remove("idle");
     $("qcount").textContent = `QUESTION ${Math.min(n, QUESTION_BUDGET)} OF ${QUESTION_BUDGET}`;
     $("qig").textContent = Number(question.ig ?? 0).toFixed(2);
@@ -405,7 +599,7 @@ function render(session, question, result) {
     .map(
       (a, i) => `<li>
         <span class="qn">Q${i + 1}</span>
-        <div><b>${esc(a.q)}</b>
+        <div><b>${esc(tidyQ(a.q))}</b>
         <div class="ans">&ldquo;${esc(a.answer ?? "")}&rdquo;
           <span class="${a.correct ? "ok" : "no"}">${a.correct ? "MATCH" : "NO MATCH"}</span></div>
         <div class="meta">${esc(nameOf(a.owner_id || ""))} &middot; ${Number(a.ig ?? 0).toFixed(
@@ -601,6 +795,7 @@ async function loadHealth() {
   }
 }
 
+paintSpk();
 loadHealth();
 loadEnrolled();
 setInterval(loadHealth, 5000);
