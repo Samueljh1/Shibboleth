@@ -1,0 +1,36 @@
+{
+  "id": "u_ben",
+  "name": "Ben",
+  "profile": {
+    "role": "infra engineer",
+    "city": "Oakland",
+    "projects": ["latency budget cleanup", "queue migration"],
+    "commute": "BART Orange line"
+  },
+  "memories": [
+    {
+      "ts": "2026-08-12T14:10:00Z",
+      "kind": "decision",
+      "text": "Cut the p99 latency budget from 400ms to 250ms and moved the image resize step off the request path entirely.",
+      "salient_attrs": { "current_project": "latency budget cleanup", "p99_target_ms": 250 }
+    },
+    {
+      "ts": "2026-08-12T20:30:00Z",
+      "kind": "conversation",
+      "text": "Complained that my landlord finally replaced the boiler after six weeks, and the first hot shower was worth the wait.",
+      "salient_attrs": { "home_issue": "boiler", "weeks_waiting": 6 }
+    },
+    {
+      "ts": "2026-08-13T08:45:00Z",
+      "kind": "event",
+      "text": "Rode the Orange line in with a flat tire on the bike still strapped to my back, planning to fix it at the shop on Telegraph.",
+      "salient_attrs": { "commute": "BART Orange", "bike": "flat tire" }
+    },
+    {
+      "ts": "2026-08-13T12:00:00Z",
+      "kind": "fact",
+      "text": "Adopted a three-legged tabby named Pascal from the shelter in March; he only drinks from the bathroom tap.",
+      "salient_attrs": { "pet": "Pascal", "pet_type": "tabby cat" }
+    }
+  ]
+}

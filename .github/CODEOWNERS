@@ -1,0 +1,16 @@
+# Review routing. Replace the placeholders with the real GitHub handles.
+#   Sam   = @SAM_HANDLE
+#   Jabir = @JABIR_HANDLE
+
+# Task A + C
+/voice/     @JABIR_HANDLE
+/engine/    @JABIR_HANDLE
+
+# Tasks B, D, E
+/store/     @SAM_HANDLE
+/web/       @SAM_HANDLE
+/app/       @SAM_HANDLE
+/scripts/   @SAM_HANDLE
+
+# Shared — both review
+/contracts/ @SAM_HANDLE @JABIR_HANDLE

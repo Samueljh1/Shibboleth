@@ -1,0 +1,36 @@
+{
+  "id": "u_ada",
+  "name": "Ada",
+  "profile": {
+    "role": "founder",
+    "city": "San Francisco",
+    "projects": ["Shibboleth", "Pier48 retrieval demo"],
+    "commute": "Muni T line"
+  },
+  "memories": [
+    {
+      "ts": "2026-08-12T15:40:00Z",
+      "kind": "decision",
+      "text": "Decided to switch the retriever from plain BM25 to hybrid rankFusion after the recall numbers stalled at 61 percent.",
+      "salient_attrs": { "current_project": "Shibboleth", "retriever": "hybrid rankFusion" }
+    },
+    {
+      "ts": "2026-08-12T19:05:00Z",
+      "kind": "conversation",
+      "text": "Told you about the burnt espresso at the Dogpatch cafe next to the pier, and that I switched to their cold brew instead.",
+      "salient_attrs": { "drink": "cold brew", "place": "Dogpatch cafe" }
+    },
+    {
+      "ts": "2026-08-13T09:20:00Z",
+      "kind": "event",
+      "text": "Missed the 8:52 T train because the Third Street signal was down, so I walked twenty minutes and arrived late to standup.",
+      "salient_attrs": { "commute": "Muni T", "delay_minutes": 20 }
+    },
+    {
+      "ts": "2026-08-13T11:15:00Z",
+      "kind": "fact",
+      "text": "My sister Nadia is flying in from Lisbon on the 22nd and staying through Labor Day weekend.",
+      "salient_attrs": { "sibling": "Nadia", "arrives": "2026-08-22" }
+    }
+  ]
+}

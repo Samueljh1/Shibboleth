@@ -1,0 +1,44 @@
+/* Readable from the back of the room: big type, high contrast. */
+:root { --bg:#0b0d10; --fg:#e8ecf1; --dim:#7d8896; --accent:#4ade80; --bad:#f87171; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--fg);
+       font:16px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; }
+header { padding:24px 32px 8px; }
+h1 { margin:0; font-size:34px; letter-spacing:.22em; }
+header p { margin:4px 0 0; color:var(--dim); }
+main { display:grid; grid-template-columns:1fr 1.1fr; gap:24px; padding:24px 32px; }
+.panel { background:#12161b; border:1px solid #1e242c; border-radius:8px;
+         padding:16px; margin-bottom:16px; display:flex; gap:10px;
+         align-items:center; flex-wrap:wrap; }
+label { color:var(--dim); display:flex; gap:8px; align-items:center; }
+input { background:#0b0d10; border:1px solid #2a323c; color:var(--fg);
+        padding:9px 11px; border-radius:6px; font:inherit; min-width:200px; }
+button { background:#1e242c; border:1px solid #2a323c; color:var(--fg);
+         padding:9px 16px; border-radius:6px; font:inherit; cursor:pointer; }
+button:hover { border-color:#3d4855; }
+button.primary { background:var(--accent); border-color:var(--accent); color:#06210f; font-weight:600; }
+button.danger { border-color:var(--bad); color:var(--bad); }
+button.live { background:var(--bad); border-color:var(--bad); color:#fff; }
+
+#question { flex:1 1 100%; font-size:20px; min-height:2em; }
+#log { list-style:none; padding:0; margin:0; color:var(--dim); font-size:14px; }
+#log li { padding:8px 0; border-top:1px solid #1e242c; }
+#log b { color:var(--fg); font-weight:400; }
+#log .ok { color:var(--accent); }
+#log .no { color:var(--bad); }
+
+.bits { font-size:64px; line-height:1; letter-spacing:-.02em; }
+.bits span { font-weight:700; }
+#entropy { margin-bottom:20px; }
+.meter { height:12px; background:#12161b; border-radius:6px; overflow:hidden; margin-top:10px; }
+#meter-fill { height:100%; width:100%; background:var(--accent); transition:width .6s ease; }
+
+.bar { margin-bottom:10px; }
+.bar .row { display:flex; justify-content:space-between; font-size:15px; }
+.bar .track { height:22px; background:#12161b; border-radius:4px; overflow:hidden; margin-top:3px; }
+.bar .fill { height:100%; width:0; background:#2f6f4f; transition:width .6s ease; }
+.bar.lead .fill { background:var(--accent); }
+
+#verdict { margin-top:24px; font-size:40px; letter-spacing:.12em; min-height:1.2em; }
+#verdict.identified { color:var(--accent); }
+#verdict.rejected { color:var(--bad); }

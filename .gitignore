@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# Env / secrets — NEVER commit real keys
+.env
+.env.local
+*.key
+
+# Audio + model artifacts
+*.wav
+*.mp3
+*.pt
+*.bin
+audio_tmp/
+models/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/

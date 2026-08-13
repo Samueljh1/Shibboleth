@@ -1,0 +1,43 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Shibboleth</title>
+<link rel="stylesheet" href="/style.css">
+
+<header>
+  <h1>SHIBBOLETH</h1>
+  <p>Prove you're you, from any device. Uncloneable.</p>
+</header>
+
+<main>
+  <section id="left">
+    <div class="panel">
+      <button id="rec">Hold to speak</button>
+      <label>claiming to be <input id="claimed" placeholder="u_ada (optional)"></label>
+      <button id="go" class="primary">Authenticate</button>
+    </div>
+
+    <div class="panel">
+      <div id="question">-</div>
+      <input id="answer" placeholder="Type your answer, or hold to speak">
+      <button id="send">Answer</button>
+    </div>
+
+    <div class="panel">
+      <label>wipe memory <input id="wipe-id" placeholder="u_ada"></label>
+      <button id="wipe" class="danger">Wipe</button>
+    </div>
+
+    <ol id="log"></ol>
+  </section>
+
+  <section id="right">
+    <div id="entropy">
+      <div class="bits"><span id="bits">-</span> bits</div>
+      <div class="meter"><div id="meter-fill"></div></div>
+    </div>
+    <div id="bars"></div>
+    <div id="verdict"></div>
+  </section>
+</main>
+
+<script src="/app.js"></script>
