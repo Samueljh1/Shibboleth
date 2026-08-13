@@ -18,8 +18,10 @@ entropy in bits, dropping to zero, is the number on the projector.
 | **D** | `web/` — the live visual | **Sam** |
 | **E** | `app/` — API orchestration | **Sam** |
 
-Each directory has a README with its acceptance criteria. **Stay in your own
-directories.** Modules never import each other — only `contracts/` plus injected
+Each directory has a README with its acceptance criteria.
+[docs/voice-and-engine.md](docs/voice-and-engine.md) is the function-by-function
+reference for `voice/` and `engine/` — read that rather than their source.
+**Stay in your own directories.** Modules never import each other — only `contracts/` plus injected
 interfaces. That's what lets us both work at once without merge pain.
 
 `contracts/` is shared and is the source of truth. Need it changed? Change it,
