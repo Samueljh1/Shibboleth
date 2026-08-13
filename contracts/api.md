@@ -29,8 +29,7 @@ Response 200:
 
     {
       "session": { ...AuthSession... },
-      "first_question": { ...QuestionSpec... } | null,
-      "question_audio_b64": "..." | null   // TTS of the question; null in mock
+      "first_question": { ...QuestionSpec... } | null
     }
 
 ## POST /session/answer
@@ -47,7 +46,6 @@ Response 200:
     {
       "session": { ...AuthSession, status may now be identified|rejected... },
       "next_question": { ...QuestionSpec... } | null,   // null when finished
-      "question_audio_b64": "..." | null,
       "result": {                                       // null while in_progress
         "status": "identified",
         "user_id": "u_ada",

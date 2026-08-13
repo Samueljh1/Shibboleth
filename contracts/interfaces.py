@@ -28,11 +28,6 @@ class Stt(Protocol):
 
 
 @runtime_checkable
-class Tts(Protocol):
-    def speak(self, text: str) -> bytes: ...
-
-
-@runtime_checkable
 class Llm(Protocol):
     def phrase_question(self, memory_text: str) -> str:
         """Turn a memory into a natural question that does NOT leak its answer."""

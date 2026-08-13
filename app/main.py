@@ -20,7 +20,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from app.config import settings
-from contracts.models import AuthSession, QuestionSpec
+from contracts.models import AuthSession
 
 app = FastAPI(title="Shibboleth")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
@@ -58,11 +58,6 @@ def _build() -> tuple[dict, dict[str, str]]:
 
         return ElevenLabsStt(settings)
 
-    def tts():
-        from voice.tts import ElevenLabsTts
-
-        return ElevenLabsTts(settings)
-
     def llm():
         from engine.llm import OpenRouterLlm
 
@@ -91,7 +86,7 @@ def _build() -> tuple[dict, dict[str, str]]:
 
     for name, fn in (
         ("embedder", embedder), ("store", store), ("voice", voice),
-        ("stt", stt), ("tts", tts), ("llm", llm), ("engine", engine),
+        ("stt", stt), ("llm", llm), ("engine", engine),
     ):
         attempt(name, fn)
     return parts, errors
@@ -123,16 +118,6 @@ class WipeBody(BaseModel):
     user_id: str
 
 
-def _speak(q: QuestionSpec | None) -> str | None:
-    tts = P.get("tts")
-    if q is None or tts is None:
-        return None
-    try:
-        return base64.b64encode(tts.speak(q.question_text)).decode()
-    except Exception:
-        return None  # a dead TTS call must never end the demo
-
-
 def _advance(s: AuthSession) -> dict:
     """Ask the next question, or finalise. Shared by /start and /answer."""
     (store, engine) = need("store", "engine")
@@ -157,7 +142,6 @@ def _advance(s: AuthSession) -> dict:
     return {
         "session": s.model_dump(by_alias=True, mode="json"),
         "next_question": q.model_dump(mode="json") if q else None,
-        "question_audio_b64": _speak(q),
         "result": result,
     }
 
@@ -203,7 +187,6 @@ def session_start(body: StartBody) -> dict:
     return {
         "session": out["session"],
         "first_question": out["next_question"],
-        "question_audio_b64": out["question_audio_b64"],
     }
 
 
