@@ -115,6 +115,69 @@ textarea:focus, input:focus { outline:none; border-color:var(--blue); }
 .recstate.ready { color:var(--accent); }
 .recstate.bad { color:var(--warn); }
 
+/* --- pending states -------------------------------------------------- */
+/* Space is reserved permanently so a request in flight never shifts layout
+   or pushes the primary button off a 375px screen. */
+.pend { min-height:40px; margin-top:10px; display:flex; align-items:center;
+        gap:10px; opacity:0; transition:opacity .15s ease; }
+.pend.on { opacity:1; }
+.segs { display:flex; gap:4px; flex:none; }
+.segs i { display:block; width:22px; height:6px; border-radius:3px; background:#2a323c; }
+.segs i.done { background:var(--accent); }
+.segs i.now { background:var(--blue); animation:segpulse 1s infinite alternate; }
+.ptxt { color:var(--blue); font-size:13px; line-height:1.5; min-width:0;
+        overflow-wrap:anywhere; }
+@keyframes segpulse { from { opacity:1; } to { opacity:.35; } }
+
+/* Busy button: stays bright (it is the loudest signal in the room), takes a
+   sweep and a short present-tense label. */
+.big.busy { position:relative; overflow:hidden; white-space:nowrap; cursor:progress; }
+.big.busy:disabled { opacity:1; }
+.big.busy:not(.primary) { border-color:var(--blue); color:var(--blue); }
+.big.busy::after { content:""; position:absolute; inset:0; pointer-events:none;
+                   background:linear-gradient(90deg,transparent,rgba(255,255,255,.26),transparent);
+                   transform:translateX(-100%); animation:sweep 1.1s linear infinite; }
+.big.busy:not(.primary)::after {
+  background:linear-gradient(90deg,transparent,rgba(96,165,250,.30),transparent); }
+@keyframes sweep { to { transform:translateX(100%); } }
+
+/* Values about to change read as stale, not wrong. */
+.panel.stale { opacity:.35; pointer-events:none; transition:opacity .2s ease; }
+/* no fill-mode: a finished settle must not out-rank the committing dim below */
+.panel.fresh { animation:rise .34s ease; }
+@keyframes rise { from { opacity:.2; transform:translateY(6px); } to { opacity:1; transform:none; } }
+.count.bump { display:inline-block; animation:bump .4s ease; }
+@keyframes bump { 50% { transform:scale(1.18); color:#fff; } }
+
+/* The commit is in flight: everything it is about to freeze goes stale and
+   cannot be touched. The ENROLL button itself stays lit. */
+body.committing #s1, body.committing #s2, body.committing #s3,
+body.committing .reczone {
+  opacity:.35; pointer-events:none; transition:opacity .2s ease; }
+
+/* --- 1: prompt loading / failure ------------------------------------- */
+.promptbox { min-height:120px; position:relative; overflow-x:hidden; }
+.promptbox.loading { color:var(--blue); }
+.promptbox.loading::after { content:""; position:absolute; inset:0;
+                            background:linear-gradient(90deg,transparent,rgba(96,165,250,.14),transparent);
+                            transform:translateX(-100%); animation:sweep 1.25s linear infinite; }
+.promptbox.failed { color:var(--bad); border-color:var(--bad); }
+#promptretry { border-color:var(--bad); color:var(--bad); margin-bottom:12px; }
+#promptretry[hidden] { display:none; }
+
+/* Recording is red and ticking; a request in flight is blue and sweeping.
+   The two must never be mistaken for each other. */
+.timer.live { color:var(--bad); font-weight:700; }
+
+@media (prefers-reduced-motion: reduce) {
+  .big.busy::after, .promptbox.loading::after, .segs i.now,
+  .rec.live .dot, .count.bump, .panel.fresh { animation:none; }
+  .rec.live .dot { opacity:1; }
+  .mem.going { transition:none; }
+  .pend, .panel.stale, body.committing #s1, body.committing #s2,
+  body.committing #s3, body.committing .reczone { transition:none; }
+}
+
 /* --- done ----------------------------------------------------------- */
 .done { border-color:#2b5b41; background:#0e1a14; }
 .uid { font-size:clamp(24px,7.5vw,42px); font-weight:800; color:var(--accent);

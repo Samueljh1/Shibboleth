@@ -53,6 +53,7 @@ class EntropyEngine:
         tau_id: float = 0.85,
         tau_reject: float = 0.05,
         max_questions: int = 5,
+        min_questions: int = 3,
         prior_temp: float = PRIOR_TEMP,
         max_mem_per_candidate: int = MAX_MEM_PER_CANDIDATE,
     ) -> None:
@@ -62,6 +63,7 @@ class EntropyEngine:
         self.tau_id = tau_id
         self.tau_reject = tau_reject
         self.max_questions = max_questions
+        self.min_questions = min_questions
         self.prior_temp = prior_temp
         self.max_mem_per_candidate = max_mem_per_candidate
 
@@ -85,6 +87,16 @@ class EntropyEngine:
             return s, None
 
         mems = self._memories(s)
+
+        # With a claimed identity, only the claimed user's memories are fair
+        # game. Selecting purely on information gain lets one mis-graded answer
+        # push belief onto someone else, after which every question is drawn
+        # from a STRANGER'S life -- unanswerable by definition, so the genuine
+        # user fails every remaining question and gets rejected. Verification
+        # asks about the claim; identification is the only mode that roams.
+        if s.claimed_id is not None and mems.get(s.claimed_id):
+            mems = {s.claimed_id: mems[s.claimed_id]}
+
         pool = self._askable(s, mems)
         if not pool:
             # Every candidate is out of unasked memories — this is what a wiped
@@ -136,7 +148,7 @@ class EntropyEngine:
         correct: bool | None = None
         if target is not None:
             sim = self._answer_similarity(answer, target)
-            factual = self._factual_check(answer, target.text)
+            factual = self._factual_check(answer, target.text, q.question_text)
             score = ig.grade_score(sim, factual)
             correct = score >= 0.5
 
@@ -182,8 +194,14 @@ class EntropyEngine:
             s.status = "identified" if (s.claimed_id in (None, top_id)) else "rejected"
             return s
 
-        if s.claimed_id is not None and s.posterior.get(s.claimed_id, 0.0) < self.tau_reject:
-            s.status = "rejected"  # the clone path
+        if (
+            s.claimed_id is not None
+            and s.posterior.get(s.claimed_id, 0.0) < self.tau_reject
+            and len(s.asked) >= self.min_questions
+        ):
+            # The clone path -- but only after min_questions. One wrong answer
+            # is a bad memory, not proof of an impostor; a clone stays wrong.
+            s.status = "rejected"
             return s
 
         if force or len(s.asked) >= self.max_questions:
@@ -267,11 +285,16 @@ class EntropyEngine:
         except Exception:
             return []
 
-    def _factual_check(self, answer: str, memory_text: str) -> bool | None:
+    def _factual_check(
+        self, answer: str, memory_text: str, question: str | None = None
+    ) -> bool | None:
         if not (answer or "").strip():
             return False
         try:
-            return bool(self.llm.factual_check(answer, memory_text))
+            try:
+                return bool(self.llm.factual_check(answer, memory_text, question))
+            except TypeError:  # graders that predate the question argument
+                return bool(self.llm.factual_check(answer, memory_text))
         except Exception:
             # No verdict available: fall back to similarity alone rather than
             # scoring a genuine user wrong because OpenRouter timed out.
@@ -283,6 +306,13 @@ class EntropyEngine:
             text = (self.llm.phrase_question(memory.text) or "").strip()
         except Exception:
             text = ""
+        if text:
+            try:
+                from engine.llm import is_yes_no
+            except Exception:
+                is_yes_no = lambda _q: False  # noqa: E731
+            if is_yes_no(text):
+                text = ""  # closed question -> unanswerable specifics -> false reject
         if not text or leaks_answer(text, memory.text):
             return fallback_question(memory, target_attr)
         return text

@@ -58,6 +58,13 @@ class Settings:
     tau_id: float = field(default_factory=lambda: _f("TAU_ID", 0.85))
     tau_reject: float = field(default_factory=lambda: _f("TAU_REJECT", 0.05))
     max_questions: int = field(default_factory=lambda: _i("MAX_QUESTIONS", 5))
+    # Never reject before this many questions: a genuine user who fluffs one
+    # answer must get another chance to prove themselves.
+    min_questions: int = field(default_factory=lambda: _i("MIN_QUESTIONS", 3))
+    # Softmax temperature on voice similarity. Lower = the voice prior counts
+    # for more, so the biometric anchors the field instead of being washed out
+    # by a single graded answer.
+    prior_temp: float = field(default_factory=lambda: _f("PRIOR_TEMP", 0.08))
     voice_topk: int = field(default_factory=lambda: _i("VOICE_TOPK", 8))
 
 

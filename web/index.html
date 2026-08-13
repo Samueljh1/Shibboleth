@@ -41,6 +41,7 @@
         <button id="go" class="primary">AUTHENTICATE</button>
         <span class="kbd">hold <b>SPACE</b> to talk</span>
       </div>
+      <div id="start-status" class="stage" hidden></div>
     </div>
 
     <div class="panel step" id="panel-q">
@@ -51,10 +52,12 @@
         <div class="qaudio">
           <button id="spk" class="ghost on" title="speaker on/off">SPEAKER ON</button>
           <button id="replay" class="ghost" title="replay question audio" disabled>REPLAY</button>
+          <span id="spk-note" class="spknote"></span>
         </div>
       </div>
       <div id="question" class="idle">Hold to speak, then hit AUTHENTICATE.</div>
       <div id="qowner" class="qowner"></div>
+      <div id="ans-status" class="stage" hidden></div>
       <div class="answerrow">
         <input id="answer" placeholder="Type your answer and press Enter" autocomplete="off">
         <button id="send" class="primary">ANSWER</button>
@@ -82,6 +85,7 @@
     </div>
 
     <div class="steplabel candlabel">CANDIDATES <span id="candcount"></span></div>
+    <div id="cand-status" class="stage" hidden></div>
     <div id="bars"></div>
 
     <div id="verdict"></div>
@@ -93,6 +97,7 @@
         <label>wipe memory <input id="wipe-id" placeholder="u_ada" autocomplete="off"></label>
         <button id="wipe" class="danger">WIPE</button>
       </div>
+      <div id="wipe-status" class="stage" hidden></div>
     </div>
   </section>
 </main>

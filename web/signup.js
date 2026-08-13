@@ -6,6 +6,11 @@ const $ = (id) => document.getElementById(id);
 let promptText = "";
 let doc = null;        // { name, profile, memories: [...] }  — client-side, uncommitted
 let audioB64 = null;
+let enrolling = false, enrolled = false;   // the commit must fire exactly once
+
+const REDUCE = !!(window.matchMedia &&
+                  window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+const SCROLL = REDUCE ? "auto" : "smooth";
 
 /* ---------------------------------------------------------------- banner */
 
@@ -15,7 +20,7 @@ function banner(msg, kind) {
   b.textContent = msg;
   b.className = kind || "";
   b.hidden = false;
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  window.scrollTo({ top: 0, behavior: SCROLL });
   clearTimeout(bannerTimer);
   if (kind === "ok") bannerTimer = setTimeout(() => { b.hidden = true; }, 2600);
 }
@@ -44,15 +49,84 @@ async function api(path, body) {
   return data || {};
 }
 
+/* --------------------------------------------------------- pending state */
+/* These calls take seconds because real services sit behind them. The steps
+   are known and ordered, so we narrate them instead of showing a spinner.
+   The server only answers at the end, so the step advances on a timer — the
+   wording stays present-tense ("reading", not "read") so it never claims more
+   than it actually knows. */
+function busyStart(btn, pend, steps, everyMs) {
+  const orig = btn.textContent;
+  const segs = [];
+  pend.innerHTML = "";
+  const bars = document.createElement("div");
+  bars.className = "segs";
+  steps.forEach(() => { const i = document.createElement("i"); bars.appendChild(i); segs.push(i); });
+  const txt = document.createElement("span");
+  txt.className = "ptxt";
+  pend.appendChild(bars);
+  pend.appendChild(txt);
+  pend.classList.add("on");
+
+  btn.disabled = true;
+  btn.classList.add("busy");
+  btn.setAttribute("aria-busy", "true");
+
+  let at = -1;
+  function show(n) {
+    at = n;
+    segs.forEach((s, k) => { s.className = k < n ? "done" : (k === n ? "now" : ""); });
+    btn.textContent = steps[n][0];
+    txt.textContent = steps[n][1];
+  }
+  show(0);
+  const timer = setInterval(() => { if (at < steps.length - 1) show(at + 1); }, everyMs);
+
+  /* Always called — on success AND on error — so nothing stays stuck busy. */
+  return function stop() {
+    clearInterval(timer);
+    btn.disabled = false;
+    btn.classList.remove("busy");
+    btn.removeAttribute("aria-busy");
+    btn.textContent = orig;
+    pend.classList.remove("on");
+    pend.innerHTML = "";
+  };
+}
+
 /* ------------------------------------------------------------ 1  prompt */
 
-fetch("/prompt.txt")
-  .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.text(); })
-  .then((t) => { promptText = t; $("prompt").textContent = t; })
-  .catch((e) => {
-    $("prompt").textContent = "Could not load the prompt: " + e.message;
-    banner("Could not load /prompt.txt — " + e.message);
-  });
+function loadPrompt() {
+  const box = $("prompt"), retry = $("promptretry"), copy = $("copy");
+  promptText = "";
+  box.className = "promptbox loading";
+  box.setAttribute("aria-busy", "true");
+  box.textContent = "loading the prompt from the server…";
+  retry.hidden = true;
+  copy.disabled = true;
+  copy.textContent = "LOADING PROMPT…";
+  fetch("/prompt.txt", { cache: "no-store" })
+    .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.text(); })
+    .then((t) => {
+      promptText = t;
+      box.className = "promptbox";
+      box.removeAttribute("aria-busy");
+      box.textContent = t;
+      copy.disabled = false;
+      copy.textContent = "COPY PROMPT";
+    })
+    .catch((e) => {
+      box.className = "promptbox failed";
+      box.removeAttribute("aria-busy");
+      box.textContent = "Could not load the prompt: " + e.message;
+      retry.hidden = false;
+      copy.disabled = true;
+      copy.textContent = "PROMPT UNAVAILABLE";
+      banner("Could not load /prompt.txt — " + e.message);
+    });
+}
+loadPrompt();
+$("promptretry").addEventListener("click", loadPrompt);
 
 $("copy").addEventListener("click", async () => {
   if (!promptText) { banner("The prompt hasn't loaded yet."); return; }
@@ -97,9 +171,14 @@ $("review").addEventListener("click", async () => {
   const raw = $("raw").value.trim();
   if (!raw) { banner("Paste your assistant's reply first."); return; }
   const btn = $("review");
-  btn.disabled = true;
-  btn.textContent = "READING…";
+  if (btn.disabled) return;                  // no double-submit
   clearBanner();
+  /* up to ~8s when it falls back to an LLM to parse freeform prose */
+  const stop = busyStart(btn, $("review-pend"), [
+    ["READING…", "reading your briefing"],
+    ["CHECKING…", "checking for anything sensitive"],
+  ], 2600);
+  $("s3").classList.add("stale");            // its values are about to change
   try {
     const out = await api("/enroll/preview", { raw });
     doc = out.doc || { name: "", profile: {}, memories: [] };
@@ -109,12 +188,16 @@ $("review").addEventListener("click", async () => {
     fillDoc();
     unlock("s3");
     unlock("s4");
-    $("s3").scrollIntoView({ behavior: "smooth", block: "start" });
+    const s3 = $("s3");
+    s3.classList.remove("fresh");
+    void s3.offsetWidth;                     // restart the settle animation
+    s3.classList.add("fresh");
+    s3.scrollIntoView({ behavior: SCROLL, block: "start" });
   } catch (e) {
     banner(e.message);
   } finally {
-    btn.disabled = false;
-    btn.textContent = "REVIEW";
+    $("s3").classList.remove("stale");
+    stop();                                  // clears the pending state on error too
   }
 });
 
@@ -196,7 +279,11 @@ function renderMems() {
     grow(ta);
   });
   const n = doc.memories.length;
-  $("count").textContent = n + (n === 1 ? " memory" : " memories");
+  const c = $("count");
+  c.textContent = n + (n === 1 ? " memory" : " memories");
+  c.classList.remove("bump");
+  void c.offsetWidth;
+  c.classList.add("bump");                   // animate to the new value
   $("empty").hidden = n > 0;
 }
 
@@ -266,6 +353,7 @@ async function startRec() {
     $("rec").classList.add("live");
     $("rec").classList.remove("have", "broken");
     $("reclabel").textContent = "RECORDING… RELEASE TO STOP";
+    $("rectime").classList.add("live");      // red + ticking ≠ a request in flight
     recState("keep talking", "");
     tick = setInterval(() => {
       const s = (Date.now() - t0) / 1000;
@@ -282,7 +370,10 @@ async function startRec() {
   }
 }
 
-function stopTimer() { clearInterval(tick); tick = null; }
+function stopTimer() {
+  clearInterval(tick); tick = null;
+  $("rectime").classList.remove("live");
+}
 
 function stopRec() {
   if (!recording) return;
@@ -303,9 +394,13 @@ recBtn.addEventListener("contextmenu", (e) => e.preventDefault());
 /* --------------------------------------------------------------- enroll */
 
 $("enroll").addEventListener("click", async () => {
-  if (!doc) { banner("Review your briefing first (step 2)."); return; }
-  if (recording) stopRec();
   const btn = $("enroll");
+  /* Commit step: a second submit would enroll the user twice. */
+  if (enrolling || enrolled || btn.disabled) return;
+  if (!doc) { banner("Review your briefing first (step 2)."); return; }
+  enrolling = true;
+  btn.disabled = true;
+  if (recording) stopRec();
 
   doc.name = $("f-name").value.trim() || doc.name || "Anonymous";
   doc.profile = doc.profile || {};
@@ -315,16 +410,25 @@ $("enroll").addEventListener("click", async () => {
   if (city) doc.profile.city = city; else delete doc.profile.city;
   doc.memories = doc.memories.filter((m) => (m.text || "").trim());
 
-  btn.disabled = true;
-  btn.textContent = "ENROLLING…";
   clearBanner();
+  const steps = [["EMBEDDING…", "embedding your memories"]];
+  steps.push(audioB64 ? ["VOICEPRINT…", "enrolling your voiceprint"]
+                      : ["SAVING…", "saving your enrollment"]);
+  const stop = busyStart(btn, $("enroll-pend"), steps, 2400);
+  document.body.classList.add("committing");
   try {
     const out = await api("/enroll", { doc, audio_b64: audioB64, user_id: null });
+    enrolled = true;
+    stop();
+    btn.disabled = true;                     // stays spent after success
+    btn.textContent = "ENROLLED ✓";
     done(out);
   } catch (e) {
+    stop();                                  // clears the pending state on error too
     banner(e.message);
-    btn.disabled = false;
-    btn.textContent = "ENROLL ME";
+  } finally {
+    enrolling = false;
+    document.body.classList.remove("committing");
   }
 });
 
@@ -342,5 +446,5 @@ function done(out) {
   $("donemeta").textContent = bits.join(" · ");
   const warns = (out.warnings || []).filter(Boolean);
   if (warns.length) banner(warns.join(" "), "warn");
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  window.scrollTo({ top: 0, behavior: SCROLL });
 }

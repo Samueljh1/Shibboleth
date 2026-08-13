@@ -371,6 +371,20 @@ def grade_score(
     return float(np.clip(w * sim_component + (1.0 - w) * (1.0 if factual_ok else 0.0), 0.0, 1.0))
 
 
+RECALL_CEIL = 0.85
+"""Cap on P(genuine user answers correctly).
+
+Left at ~1.0, a miss multiplies the claimed user's belief by (1 - p) ~ 0.05 --
+a 19x penalty that one forgotten detail never recovers from, and genuine users
+DO forget under stage pressure. Capping the model's confidence in human recall
+makes a single miss survivable while a clone, who misses every time, still
+collapses multiplicatively: 0.15^3 = 0.003.
+"""
+
+RECALL_FLOOR = 0.05
+"""Floor, so a candidate who was never going to know can still be evidenced."""
+
+
 def answer_likelihood(score: float, p_correct: dict[str, float]) -> dict[str, float]:
     """P(this graded answer | speaker is u), as soft evidence.
 
@@ -381,6 +395,7 @@ def answer_likelihood(score: float, p_correct: dict[str, float]) -> dict[str, fl
     """
     s = float(np.clip(score, 0.0, 1.0))
     return {
-        u: s * float(np.clip(p, 0.0, 1.0)) + (1.0 - s) * (1.0 - float(np.clip(p, 0.0, 1.0)))
+        u: s * float(np.clip(p, RECALL_FLOOR, RECALL_CEIL))
+        + (1.0 - s) * (1.0 - float(np.clip(p, RECALL_FLOOR, RECALL_CEIL)))
         for u, p in p_correct.items()
     }
