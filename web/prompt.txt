@@ -1,0 +1,32 @@
+Only include something if you can point to the conversation where I told you it. Nothing invented, nothing inferred. If you have no memory of past conversations with me, reply with exactly NO_MEMORY and nothing else.
+
+Give me up to 25 things from roughly the last two weeks; fewer is fine. If under ten qualify, look back another two weeks rather than padding.
+
+Each item is one ordinary thing that happened on a particular day: a decision and what I picked, something that broke and what I did, a possession and what is wrong with it, something I cooked or repaired, a domestic mishap. Two tests: could anyone who read what I published this month reconstruct it? Could a peer with my job in my city have a near-identical version? If either is yes, sharpen or drop it.
+
+Exclude these categories -- the examples are not exhaustive -- in text, salient_attrs and profile alike. Health of any kind: fitness, sleep, diet, alcohol, therapy, medication, appointments, caregiving. Sex, religion, politics, legal matters, immigration, money. Anything non-public about my employer or client: products, launch dates, fundraising, revenue, pricing, customer or investor identities, personnel decisions, outages, incidents. Production infrastructure: hostnames, domains, repo or service names, live version numbers, unresolved defects; version detail is fine for personal projects. Named venues, streets, routes, addresses, travel destinations or dates. Anything usable to verify or reset an identity: birthday, birthplace, first employer, pets, vehicles, schools, phone numbers, parents' names, password resets, MFA changes, lockouts. Anything from files, logs, screenshots, emails or calendars I pasted. Anything I published publicly or company-wide. Never write an email address, a phone number, or the words password, secret, API key or credential. Nothing whose subject is another person: others appear incidentally, by role, never by name, and never disclosing their health, employment, legal or financial situation.
+
+This will be shown on a screen, recorded, and stored in a database on the internet: would each item be fine on a slide behind me, visible to my co-founder, my mother, and a competitor? If an item cannot pass while stated in full, drop it -- do not soften or reword it. If unsure, drop it: eight good items is a success, one bad item is a failure. Then read the set together and drop anything that, with my role and city, identifies me, my employer or where I live.
+
+Reply with only a single JSON object in exactly this shape:
+
+{
+  "name": "<my name>",
+  "profile": { "role": "<my role>", "city": "<my city>" },
+  "memories": [
+    { "ts": "<YYYY-MM-DD>",
+      "kind": "decision",
+      "text": "<one sentence about one specific thing that happened>",
+      "salient_attrs": { "<key>": "<value>" } }
+  ]
+}
+
+The values above are placeholders -- never copy them.
+
+ts is the real day, date only; omit it if you do not know the day. Never guess or shift a date.
+kind is exactly one of: conversation, fact, decision, event.
+text is one self-contained past-tense sentence of 12 to 25 words carrying exactly one checkable payload -- a name, a number, a count, or the option I picked -- in a word I would say out loud. Keep the setup minimal.
+salient_attrs holds 1 to 3 short pairs that only re-label a detail already in the sentence: no proper nouns, no reference numbers.
+profile holds role and city, only if I have told you them; omit either otherwise. Never guess a city.
+
+No markdown fence, no preamble, no commentary. Just the JSON object.

@@ -11,7 +11,8 @@ body { margin:0; background:var(--bg); color:var(--fg); overflow-x:hidden;
        padding-bottom:env(safe-area-inset-bottom); }
 
 /* --- banner --------------------------------------------------------- */
-#banner { position:fixed; inset:0 0 auto 0; z-index:60; padding:14px 18px;
+/* sticky, not fixed: it takes space so it never covers the header */
+#banner { position:sticky; top:0; z-index:60; padding:14px 18px;
           font-size:15px; font-weight:700; letter-spacing:.03em;
           background:var(--bad); color:#180505; word-break:break-word; }
 #banner.ok { background:var(--accent); color:#06210f; }

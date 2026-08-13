@@ -1,0 +1,121 @@
+{
+  "id": "u_dev",
+  "name": "Dev",
+  "profile": {
+    "role": "sous chef",
+    "city": "Austin",
+    "workplace": "Verbena, a tasting room on East 6th",
+    "commute": "a mint green Vespa called Tilde",
+    "hobby": "Sunday pickup soccer at Zilker, plays left back"
+  },
+  "memories": [
+    {
+      "ts": "2026-08-06T06:15:00Z",
+      "kind": "fact",
+      "text": "I feed the sourdough starter, which is named Bartleby, at a quarter past six every morning with fifty grams of rye and fifty of water.",
+      "salient_attrs": { "starter": "Bartleby", "flour_g": 50 }
+    },
+    {
+      "ts": "2026-08-06T22:40:00Z",
+      "kind": "event",
+      "text": "We did a hundred and twelve covers on a Thursday, which is thirty more than the room is supposed to hold, and the dish pit never once fell behind.",
+      "salient_attrs": { "covers": 112, "day": "Thursday" }
+    },
+    {
+      "ts": "2026-08-07T14:00:00Z",
+      "kind": "decision",
+      "text": "Decided to cut the tasting menu from nine courses to seven and killed the beet dish, replacing it with charred fennel and buttermilk.",
+      "salient_attrs": { "courses_before": 9, "courses_after": 7 }
+    },
+    {
+      "ts": "2026-08-07T19:20:00Z",
+      "kind": "conversation",
+      "text": "Argued with Renata on the line about whether the fennel needs the anchovy, and we settled it by making both and letting the dishwasher pick.",
+      "salient_attrs": { "colleague": "Renata", "dispute": "anchovy in the fennel" }
+    },
+    {
+      "ts": "2026-08-08T10:30:00Z",
+      "kind": "event",
+      "text": "The walk-in drifted up to forty-four degrees overnight and I moved every dairy container to the reach-in before the repair guy arrived at eleven.",
+      "salient_attrs": { "walkin_temp_f": 44, "target_temp_f": 38 }
+    },
+    {
+      "ts": "2026-08-08T16:50:00Z",
+      "kind": "fact",
+      "text": "The koji batch is on day four and smells like pineapple, which is exactly right, and I am pulling it Sunday to make the chickpea miso.",
+      "salient_attrs": { "ferment": "koji", "day": 4 }
+    },
+    {
+      "ts": "2026-08-09T09:00:00Z",
+      "kind": "event",
+      "text": "Played left back at Zilker and got nutmegged twice by a fifteen year old whose father was standing on the touchline enjoying it enormously.",
+      "salient_attrs": { "position": "left back", "park": "Zilker" }
+    },
+    {
+      "ts": "2026-08-09T23:10:00Z",
+      "kind": "conversation",
+      "text": "A regular at the counter asked what the burnt-looking crumb on the fennel was, and when I said toasted milk solids he ordered a second plate.",
+      "salient_attrs": { "garnish": "toasted milk solids", "dish": "charred fennel" }
+    },
+    {
+      "ts": "2026-08-10T11:45:00Z",
+      "kind": "decision",
+      "text": "Decided to re-handle my two hundred and forty millimetre gyuto in white oak instead of buying a new knife, and ordered the epoxy for it.",
+      "salient_attrs": { "knife_mm": 240, "handle_wood": "white oak" }
+    },
+    {
+      "ts": "2026-08-10T17:30:00Z",
+      "kind": "event",
+      "text": "Tilde would not start outside the loading dock and it turned out to be the fuel line, so I pushed the Vespa four blocks in the heat.",
+      "salient_attrs": { "vehicle": "Tilde the Vespa", "fault": "fuel line" }
+    },
+    {
+      "ts": "2026-08-11T13:15:00Z",
+      "kind": "fact",
+      "text": "There are three chile plants on the windowsill above the prep sink and only the serrano has produced anything worth picking.",
+      "salient_attrs": { "plants": 3, "producing": "serrano" }
+    },
+    {
+      "ts": "2026-08-11T21:00:00Z",
+      "kind": "event",
+      "text": "Burned the back of my left wrist on the salamander during service and finished the night with a wet towel wrapped around it.",
+      "salient_attrs": { "injury": "wrist burn", "equipment": "salamander" }
+    },
+    {
+      "ts": "2026-08-12T14:25:00Z",
+      "kind": "decision",
+      "text": "Decided to move family meal from four thirty to three so the front of house can eat before the polish, and told everyone by taping a note to the pass.",
+      "salient_attrs": { "family_meal_from": "16:30", "family_meal_to": "15:00" }
+    },
+    {
+      "ts": "2026-08-12T16:40:00Z",
+      "kind": "conversation",
+      "text": "The produce rep told me the peach crop from the Fredericksburg grower is done in ten days, so I booked the last two cases for Saturday.",
+      "salient_attrs": { "grower": "Fredericksburg", "cases": 2 }
+    },
+    {
+      "ts": "2026-08-12T23:55:00Z",
+      "kind": "event",
+      "text": "Closed out with a Topo Chico and three limes on the back step and watched the bar next door lose a whole rack of glassware in one crash.",
+      "salient_attrs": { "drink": "Topo Chico with three limes", "limes": 3 }
+    },
+    {
+      "ts": "2026-08-13T07:20:00Z",
+      "kind": "event",
+      "text": "Got to the market at seven twenty and the okra was already picked over, so I bought eight pounds of Sungold tomatoes to make up the menu.",
+      "salient_attrs": { "sold_out": "okra", "bought_lb": 8 }
+    },
+    {
+      "ts": "2026-08-13T09:35:00Z",
+      "kind": "fact",
+      "text": "My mother's recipe card for pork vindaloo is taped inside the spice cupboard door and the vinegar quantity on it has been crossed out twice.",
+      "salient_attrs": { "recipe": "pork vindaloo", "crossings": 2 }
+    },
+    {
+      "ts": "2026-08-13T10:50:00Z",
+      "kind": "decision",
+      "text": "Decided to put the seven course menu on a single card with no prices listed on the back, and to have Renata read the wine pairings aloud instead.",
+      "salient_attrs": { "menu_card": "single", "reader": "Renata" }
+    }
+  ]
+}

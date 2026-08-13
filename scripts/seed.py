@@ -87,6 +87,12 @@ def main(create_index: bool = False) -> None:
     if create_index:
         from pymongo.operations import SearchIndexModel
 
+        # The index can't be built on a namespace that doesn't exist yet, and
+        # voiceprints only appear once someone enrolls with audio. Create it
+        # empty so the index is already warm before the demo.
+        if "voiceprints" not in db.list_collection_names():
+            db.create_collection("voiceprints")
+
         try:
             db.voiceprints.create_search_index(
                 SearchIndexModel(
