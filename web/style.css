@@ -53,6 +53,11 @@ button.primary { background:var(--accent); border-color:var(--accent); color:#06
 button.danger { border-color:var(--bad); color:var(--bad); background:transparent; }
 button.ghost { background:transparent; color:var(--dim); font-size:12px; padding:6px 10px; }
 button.ghost.on { color:var(--accent); border-color:#2b5b41; }
+/* secondary escape hatch — never competes with .primary */
+button.muted { background:transparent; color:var(--dim); border-color:#39434f;
+               font-weight:600; letter-spacing:.12em; }
+button.muted:hover:not(:disabled) { color:var(--fg); border-color:#5b6878; }
+button:focus-visible { outline:2px solid var(--blue); outline-offset:2px; }
 .kbd { color:#5a6572; font-size:12px; letter-spacing:.06em; }
 .kbd b { color:var(--dim); font-weight:700; }
 .hintrow { margin-top:10px; }
@@ -88,11 +93,19 @@ button.ghost.on { color:var(--accent); border-color:#2b5b41; }
 .dots i.hit { background:var(--accent); }
 .dots i.miss { background:var(--bad); }
 .dots i.now { background:var(--blue); animation:pulse .9s infinite alternate; }
+.dots i.skip { background:transparent; border:2px solid #6b7686; }
 #question { font-size:clamp(26px,3.2vw,50px); line-height:1.2; margin:14px 0 8px;
             min-height:2.2em; font-weight:600; }
 #question.idle { color:var(--dim); font-weight:400; font-size:clamp(18px,1.8vw,26px); }
 .qowner { color:#5f6b7a; font-size:14px; margin-bottom:14px; min-height:1.2em; }
 .qowner b { color:var(--blue); font-weight:600; }
+/* re-target announcement after "I don't know" */
+.retarget { margin:0 0 12px; font-size:clamp(17px,1.9vw,28px); color:var(--blue);
+            font-weight:700; letter-spacing:.05em; animation:slam .3s ease-out; }
+.retarget[hidden] { display:none; }
+.retarget b { color:var(--fg); }
+.retarget em { font-style:normal; color:#5f6b7a; font-size:.6em; letter-spacing:.14em;
+               margin-right:10px; }
 .answerrow { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
 .answerrow #answer { flex:1 1 260px; font-size:19px; padding:14px; }
 
@@ -106,6 +119,12 @@ button.ghost.on { color:var(--accent); border-color:#2b5b41; }
 #log .meta { margin-top:3px; font-size:13px; color:#5f6b7a; }
 #log .ok { color:var(--accent); font-weight:700; margin-left:6px; }
 #log .no { color:var(--bad); font-weight:700; margin-left:6px; }
+/* a skipped turn is not a failure — muted tag, never red */
+#log .skip { color:#8a95a4; font-weight:700; margin-left:6px; font-size:12px;
+             letter-spacing:.14em; border:1px solid #39434f; border-radius:4px;
+             padding:2px 8px; }
+#log .skiptext { color:#5f6b7a; font-style:italic; }
+#log li.skipped b { color:var(--dim); font-weight:500; }
 
 /* --- entropy --------------------------------------------------------- */
 #entropy { margin-bottom:22px; }
@@ -146,6 +165,14 @@ button.ghost.on { color:var(--accent); border-color:#2b5b41; }
 .bar .fill { height:100%; width:0; background:#2b4b3c;
              transition:width .7s cubic-bezier(.2,.7,.2,1), background .4s ease; }
 .bar.lead .fill { background:linear-gradient(90deg,#1a7a45,var(--accent)); }
+/* candidates the speaker passed on with "I don't know" */
+.bar.passed { opacity:.42; }
+.bar.passed .who { text-decoration:line-through; text-decoration-color:#5f6b7a; }
+.bar.passed .pct { color:#5f6b7a; }
+.bar.passed .fill { background:#2a323c; }
+.bar.passed:not(.owner) .who::after { content:" PASSED"; color:#8a95a4; font-size:.55em;
+                                      letter-spacing:.16em; margin-left:10px;
+                                      text-decoration:none; display:inline-block; }
 
 /* --- verdict --------------------------------------------------------- */
 #verdict { margin-top:26px; }
@@ -236,7 +263,7 @@ button.ghost.loading, button.ghost.playing { color:var(--blue); border-color:#2c
 button.ghost.playing { background:#0e1a28; }
 
 @media (prefers-reduced-motion: reduce) {
-  .stage .sweep, .stage .st.now .pip, button.busy, #bits.tick { animation:none; }
+  .stage .sweep, .stage .st.now .pip, button.busy, #bits.tick, .retarget { animation:none; }
   button.busy { background-image:none; }
   #entropy, #bars, #meter-fill, .bar, .bar .fill { transition:none !important; }
 }

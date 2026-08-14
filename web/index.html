@@ -57,10 +57,13 @@
       </div>
       <div id="question" class="idle">Hold to speak, then hit AUTHENTICATE.</div>
       <div id="qowner" class="qowner"></div>
+      <div id="retarget" class="retarget" hidden></div>
       <div id="ans-status" class="stage" hidden></div>
       <div class="answerrow">
         <input id="answer" placeholder="Type your answer and press Enter" autocomplete="off">
         <button id="send" class="primary">ANSWER</button>
+        <button id="dontknow" class="muted" disabled
+                title="wrong person? ask about the next best match instead">I DON'T KNOW</button>
         <button id="rec-ans" class="rec small">
           <span class="dot"></span>
           <span class="reclabel">HOLD TO ANSWER</span>
@@ -68,7 +71,8 @@
         <span id="rec-ans-time" class="timer">0.0s</span>
         <span class="level"><i id="rec-ans-level"></i></span>
       </div>
-      <div class="kbd hintrow">typed answers always work &middot; <b>Esc</b> leaves the box so <b>SPACE</b> records</div>
+      <div class="kbd hintrow">typed answers always work &middot; <b>Esc</b> leaves the box so <b>SPACE</b> records
+        &middot; <b>Tab</b> to <b>I DON'T KNOW</b> if these questions aren't about you</div>
     </div>
 
     <ol id="log"></ol>

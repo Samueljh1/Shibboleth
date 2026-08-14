@@ -296,11 +296,13 @@ document.addEventListener("keydown", (e) => {
     return;
   }
   if (e.code !== "Space" || e.repeat || typing()) return;
+  if (document.activeElement === $("dontknow")) return; // let SPACE press the focused button
   e.preventDefault();
   (sessionId ? recAns : recVoice).start();
 });
 document.addEventListener("keyup", (e) => {
   if (e.code !== "Space" || typing()) return;
+  if (document.activeElement === $("dontknow")) return;
   e.preventDefault();
   recVoice.stop();
   recAns.stop();
@@ -417,22 +419,37 @@ async function submitAnswer(payload) {
   busy = true;
   setStale(true); // the posterior on screen is about to be replaced — do not read it
   const spoken = !!payload.audio_b64;
-  const undo = [busyBtn($("send"), "GRADING"), busyBtn($("rec-ans"), "SENT")];
+  // "I don't know" = wrong person matched; the server re-targets the next candidate
+  const passing = !!payload.dont_know;
+  const wasOwner = currentOwner;
+  const undo = passing
+    ? [busyBtn($("dontknow"), "PASSING"), busyBtn($("send")), busyBtn($("rec-ans"))]
+    : [busyBtn($("send"), "GRADING"), busyBtn($("rec-ans"), "SENT"), busyBtn($("dontknow"))];
   const ansPh = $("answer").placeholder;
   $("answer").disabled = true;
-  $("answer").placeholder = "sending your answer…";
+  $("answer").placeholder = passing ? "passing on this person…" : "sending your answer…";
   $("question").classList.add("pending");
+  $("retarget").hidden = true;
   const steps = [];
-  if (spoken) steps.push(["transcribing your answer", 1600]); // typed answers skip this
-  steps.push(["checking it against stored memory", 2000]);
-  steps.push(["updating the posterior", 1600]);
-  steps.push(["choosing the next question", 0]);
+  if (passing) {
+    steps.push(["noting that you don't know", 1300]);
+    steps.push(["switching to the next best match", 1800]);
+    steps.push(["finding a question you can answer", 0]);
+  } else {
+    if (spoken) steps.push(["transcribing your answer", 1600]); // typed answers skip this
+    steps.push(["checking it against stored memory", 2000]);
+    steps.push(["updating the posterior", 1600]);
+    steps.push(["choosing the next question", 0]);
+  }
   const st = stage($("ans-status"), steps);
   try {
     const d = await post("/session/answer", { session_id: sessionId, ...payload });
     st.hide();
     $("answer").value = "";
     render(d.session, d.next_question, d.result);
+    // say it out loud when the system re-targets, so the jump isn't silent
+    const now = d.next_question ? d.next_question.owner_id || null : null;
+    if (passing && now && !d.result && now !== wasOwner) showRetarget(now);
     if (d.result) setAudioState("idle");
     else play(d.question_audio_b64);
     if (d.next_question) $("answer").focus();
@@ -448,17 +465,25 @@ async function submitAnswer(payload) {
     $("answer").disabled = !sessionId;
     $("send").disabled = !sessionId;
     $("rec-ans").disabled = !sessionId;
+    $("dontknow").disabled = !sessionId;
   }
+}
+
+function showRetarget(uid) {
+  const el = $("retarget");
+  el.innerHTML = `<em>RE-TARGETED</em>now asking about <b>${esc(nameOf(uid))}</b>`;
+  el.hidden = false;
 }
 
 $("send").onclick = () => {
   const typed = $("answer").value.trim();
   if (typed) submitAnswer({ answer_text: typed });
 };
+$("dontknow").onclick = () => submitAnswer({ dont_know: true });
 $("answer").addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
     e.preventDefault();
-    $("send").click();
+    $("send").click(); // Enter is the real answer, never the skip
   }
 });
 
@@ -501,6 +526,9 @@ function resetRun() {
   });
   $("send").disabled = false;
   $("rec-ans").disabled = false;
+  $("dontknow").disabled = true; // no session yet — nothing to pass on
+  $("retarget").hidden = true;
+  $("retarget").innerHTML = "";
   $("replay").disabled = true;
   $("log").innerHTML = "";
   $("bars").innerHTML = "";
@@ -596,18 +624,25 @@ function render(session, question, result) {
   renderDots(asked, !!question && !result);
 
   $("log").innerHTML = asked
-    .map(
-      (a, i) => `<li>
+    .map((a, i) => {
+      // a skipped turn is neither a match nor a miss — it must not read as a failure
+      const passed = !!a.skipped;
+      const verdict = passed
+        ? '<span class="skip">SKIPPED</span>'
+        : `<span class="${a.correct ? "ok" : "no"}">${a.correct ? "MATCH" : "NO MATCH"}</span>`;
+      const said = passed
+        ? '<span class="skiptext">passed &middot; not their life</span>'
+        : `&ldquo;${esc(a.answer ?? "")}&rdquo;`;
+      return `<li class="${passed ? "skipped" : ""}">
         <span class="qn">Q${i + 1}</span>
         <div><b>${esc(tidyQ(a.q))}</b>
-        <div class="ans">&ldquo;${esc(a.answer ?? "")}&rdquo;
-          <span class="${a.correct ? "ok" : "no"}">${a.correct ? "MATCH" : "NO MATCH"}</span></div>
+        <div class="ans">${said} ${verdict}</div>
         <div class="meta">${esc(nameOf(a.owner_id || ""))} &middot; ${Number(a.ig ?? 0).toFixed(
           2
         )} bits expected &rarr; ${
           a.entropy_after == null ? "?" : Number(a.entropy_after).toFixed(2)
-        } bits left</div></div></li>`
-    )
+        } bits left</div></div></li>`;
+    })
     .join("");
 
   if (result) {
@@ -633,7 +668,11 @@ function render(session, question, result) {
       `entropy ${startBits.toFixed(2)} &rarr; ${bits.toFixed(2)} bits`,
       result.status
     );
+    $("retarget").hidden = true;
   }
+
+  // the escape hatch is live only while a question is actually on screen
+  $("dontknow").disabled = !sessionId || !question || !!result;
 }
 
 function renderDots(asked, pending) {
@@ -641,7 +680,7 @@ function renderDots(asked, pending) {
   for (let i = 0; i < QUESTION_BUDGET; i++) {
     const a = asked[i];
     let cls = "pending";
-    if (a) cls = a.correct ? "hit" : "miss";
+    if (a) cls = a.skipped ? "skip" : a.correct ? "hit" : "miss";
     else if (pending && i === asked.length) cls = "now";
     cells.push(`<i class="${cls}"></i>`);
   }
@@ -650,6 +689,7 @@ function renderDots(asked, pending) {
 
 function renderBars(session) {
   const wrap = $("bars");
+  const passedOver = new Set(session.skipped || []);
   const post_ = session.posterior || {};
   const ranked = Object.entries(post_).sort((a, b) => b[1] - a[1]);
   $("candcount").textContent = ranked.length ? `(${ranked.length})` : "";
@@ -677,6 +717,7 @@ function renderBars(session) {
     el.classList.toggle("lead", i === 0);
     el.classList.toggle("dead", p < 0.005);
     el.classList.toggle("owner", uid === currentOwner);
+    el.classList.toggle("passed", passedOver.has(uid));
     const nm = names[uid];
     el.querySelector(".who").innerHTML = nm
       ? `${esc(nm)} <em>${esc(uid)}</em>`

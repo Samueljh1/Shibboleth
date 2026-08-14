@@ -83,7 +83,7 @@ class EntropyEngine:
 
     def next_question(self, s: AuthSession) -> tuple[AuthSession, QuestionSpec | None]:
         """argmax expected IG over unasked memories. None when nothing is askable."""
-        if len(s.asked) >= self.max_questions:
+        if self._graded(s) >= self.max_questions:
             return s, None
 
         mems = self._memories(s)
@@ -94,9 +94,21 @@ class EntropyEngine:
         # definition, so a genuine speaker fails them and the session spirals.
         # The focus is recomputed every turn, so if the leader changes the
         # questions follow it.
-        focus = s.claimed_id if (s.claimed_id and mems.get(s.claimed_id)) else s.leader[0]
-        if focus and mems.get(focus):
-            mems = {focus: mems[focus]}
+        # Anyone the speaker has passed on is out of the running for FOCUS:
+        # "I don't know" means we are asking the wrong person, so move to the
+        # next most probable one rather than pressing the same wrong life.
+        skipped = set(s.skipped or ())
+        focus = None
+        if s.claimed_id and s.claimed_id not in skipped and mems.get(s.claimed_id):
+            focus = s.claimed_id
+        else:
+            for uid in sorted(s.posterior, key=s.posterior.__getitem__, reverse=True):
+                if uid not in skipped and mems.get(uid):
+                    focus = uid
+                    break
+        if focus is None:  # every candidate passed over -- nothing left to ask
+            return s, None
+        mems = {focus: mems[focus]}
 
         pool = self._askable(s, mems)
         if not pool:
@@ -138,6 +150,45 @@ class EntropyEngine:
             ig=float(gains[best]),
             question_text=self._phrase(memory, target_attr),
         )
+
+    @staticmethod
+    def _graded(s: AuthSession) -> int:
+        """Turns that actually produced evidence.
+
+        Skips must not consume the budget: passing on a stranger's question is
+        how the speaker steers us to the right person, and charging them for it
+        would run the session out before we ever asked them anything. The
+        session still terminates -- next_question returns None once every
+        candidate has been passed over.
+        """
+        return sum(1 for a in s.asked if not a.skipped)
+
+    def skip(self, s: AuthSession, q: QuestionSpec) -> AuthSession:
+        """The speaker said 'I don't know' -- retarget instead of penalising.
+
+        A miss is evidence someone is not who they claim. A skip is evidence we
+        are questioning the wrong PERSON, which is a different thing and must
+        not collapse their probability: the speaker may simply never have been
+        this candidate. Mark the candidate passed over so next_question moves
+        to the next most probable one, and record the turn without a grade.
+        """
+        if q.owner_id and q.owner_id not in s.skipped:
+            s.skipped.append(q.owner_id)
+        s.asked.append(
+            AskedQuestion(
+                q=q.question_text,
+                memory_id=q.memory_id,
+                owner_id=q.owner_id,
+                target_attr=q.target_attr,
+                ig=q.ig,
+                answer=None,
+                graded=False,
+                skipped=True,
+                correct=None,
+                entropy_after=s.entropy_bits,
+            )
+        )
+        return self.finalize(s)
 
     def grade_and_update(
         self, s: AuthSession, q: QuestionSpec, answer: str
@@ -205,14 +256,14 @@ class EntropyEngine:
         if (
             s.claimed_id is not None
             and s.posterior.get(s.claimed_id, 0.0) < self.tau_reject
-            and len(s.asked) >= self.min_questions
+            and self._graded(s) >= self.min_questions
         ):
             # The clone path -- but only after min_questions. One wrong answer
             # is a bad memory, not proof of an impostor; a clone stays wrong.
             s.status = "rejected"
             return s
 
-        if force or len(s.asked) >= self.max_questions:
+        if force or self._graded(s) >= self.max_questions:
             s.status = "rejected"  # budget spent with no winner, or no evidence
             return s
 

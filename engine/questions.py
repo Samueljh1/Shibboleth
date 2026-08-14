@@ -55,11 +55,15 @@ def content_tokens(text: str) -> list[str]:
     return [t for t in _WORD.findall((text or "").lower()) if len(t) > 3 and t not in _STOP]
 
 
-def _distinctive_marks(text: str) -> set[str]:
+def _distinctive_marks(text: str, include_initial: bool = False) -> set[str]:
     """Proper nouns and numbers — the tokens that ARE the answer.
 
-    Sentence-initial words are skipped: they are capitalised by position, not
-    because they name anything.
+    Asymmetric on purpose. On the QUESTION side sentence-initial words are
+    skipped: "What"/"Did" are capitalised by position and would flag every
+    question. On the MEMORY side they are kept (`include_initial`), because a
+    name that happens to open a sentence -- "Roscoe barked at the truck" -- is
+    still a name, and missing it let a question cue the answer by naming it. A
+    false positive here only costs us a templated question, which is safe.
     """
     t = text or ""
     marks = {m.group(0).lower() for m in _NUMBER.finditer(t)}
@@ -67,7 +71,7 @@ def _distinctive_marks(text: str) -> set[str]:
     marks |= {w for w in _WORD.findall(t.lower()) if w in _NUMBER_WORDS}
     for sentence in _SENTENCE.split(t):
         words = sentence.split()
-        for w in words[1:]:  # skip the sentence-initial word
+        for w in (words if include_initial else words[1:]):
             bare = w.strip(".,;:!?\"'()[]")
             if len(bare) > 2 and bare[0].isupper() and not bare.isupper():
                 marks.add(bare.lower())
@@ -93,7 +97,7 @@ def leaks_answer(
         return False
 
     # Proper nouns and numbers: any single one shared is a leak.
-    mem_marks = _distinctive_marks(memory_text)
+    mem_marks = _distinctive_marks(memory_text, include_initial=True)
     if mem_marks & _distinctive_marks(question):
         return True
 
@@ -204,6 +208,13 @@ def fallback_question(memory: MemoryEvent, target_attr: str | None = None) -> st
     """
     when = when_phrase(memory.ts)
     if target_attr:
-        return f"Thinking back to {when}: what was your {str(target_attr).replace('_', ' ').strip()}?"
+        attr = str(target_attr).replace("_", " ").strip()
+        # "Thinking back to {when}" double-prepositioned ("to on Tuesday") and
+        # "what was your producer?" reads as nonsense. Lead with the time, use
+        # the attribute as the HINT, and still make them supply the detail.
+        return (
+            f"{when[:1].upper()}{when[1:]} you mentioned something "
+            f"about your {attr} — what exactly was it?"
+        )
     template = _TEMPLATES.get((memory.kind or "").lower(), "What do you remember from {when}?")
     return template.format(when=when)

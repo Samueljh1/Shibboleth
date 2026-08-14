@@ -119,6 +119,7 @@ class AnswerBody(BaseModel):
     session_id: str
     answer_text: str | None = None
     audio_b64: str | None = None
+    dont_know: bool = False  # retarget to the next candidate, no penalty
 
 
 class WipeBody(BaseModel):
@@ -234,6 +235,12 @@ def session_answer(body: AnswerBody) -> dict:
         raise HTTPException(404, f"unknown session: {body.session_id}")
     if s.status != "in_progress":
         raise HTTPException(409, f"session already {s.status}")
+
+    if body.dont_know:
+        # Not an answer and not a miss: we are asking the wrong person.
+        if s.pending is not None:
+            s = engine.skip(s, s.pending)
+        return _advance(s)
 
     if body.answer_text is not None:
         answer = body.answer_text

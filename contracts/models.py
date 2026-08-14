@@ -73,6 +73,7 @@ class AskedQuestion(_Doc):
     ig: float = 0.0
     answer: str | None = None
     graded: bool = False
+    skipped: bool = False  # speaker said "I don't know" -- not a wrong answer
     correct: bool | None = None
     entropy_after: float | None = None
 
@@ -85,6 +86,7 @@ class AuthSession(_Doc):
     asked: list[AskedQuestion] = Field(default_factory=list)
     status: SessionStatus = "in_progress"
     claimed_id: str | None = None
+    skipped: list[str] = Field(default_factory=list)  # candidates passed over
     pending: "QuestionSpec | None" = None  # question handed out, awaiting an answer
     voice_vec: list[float] = Field(default_factory=list)  # for voice-continuity checks
     created_at: datetime = Field(default_factory=_now)
