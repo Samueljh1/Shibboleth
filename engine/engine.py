@@ -88,14 +88,15 @@ class EntropyEngine:
 
         mems = self._memories(s)
 
-        # With a claimed identity, only the claimed user's memories are fair
-        # game. Selecting purely on information gain lets one mis-graded answer
-        # push belief onto someone else, after which every question is drawn
-        # from a STRANGER'S life -- unanswerable by definition, so the genuine
-        # user fails every remaining question and gets rejected. Verification
-        # asks about the claim; identification is the only mode that roams.
-        if s.claimed_id is not None and mems.get(s.claimed_id):
-            mems = {s.claimed_id: mems[s.claimed_id]}
+        # Always ask about ONE person: the claimed identity if there is one,
+        # otherwise the current best match. Ranking purely on information gain
+        # lets questions be drawn from a STRANGER'S life -- unanswerable by
+        # definition, so a genuine speaker fails them and the session spirals.
+        # The focus is recomputed every turn, so if the leader changes the
+        # questions follow it.
+        focus = s.claimed_id if (s.claimed_id and mems.get(s.claimed_id)) else s.leader[0]
+        if focus and mems.get(focus):
+            mems = {focus: mems[focus]}
 
         pool = self._askable(s, mems)
         if not pool:
