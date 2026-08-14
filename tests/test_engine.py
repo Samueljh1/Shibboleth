@@ -85,7 +85,7 @@ def test_genuine_speaker_is_identified_in_at_most_three_questions(world):
 
 def test_entropy_is_non_increasing_across_correct_answers(world):
     store, _, engine = world
-    _, entropies = run_session(
+    session, entropies = run_session(
         engine,
         store,
         voice_vector(GENUINE, jitter=0.35),
@@ -94,7 +94,15 @@ def test_entropy_is_non_increasing_across_correct_answers(world):
     assert len(entropies) >= 2
     for before, after in zip(entropies, entropies[1:]):
         assert after <= before + 1e-9, f"entropy rose: {before:.4f} -> {after:.4f}"
-    assert entropies[-1] < entropies[0] / 2
+    assert entropies[-1] < entropies[0], "correct answers must remove uncertainty"
+
+    # Questions are now drawn only from the leading candidate, so a session
+    # verifies ONE identity rather than splitting the whole field. Residual
+    # entropy is spread over candidates we never asked about, so it no longer
+    # halves -- what must happen is that the genuine speaker wins outright.
+    top_id, top_p = session.leader
+    assert top_id == GENUINE
+    assert top_p > engine.tau_id
 
 
 def test_the_engine_asks_the_leader_and_never_repeats_a_memory(world):
