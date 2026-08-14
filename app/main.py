@@ -173,6 +173,13 @@ def health() -> dict:
         "ok": True,
         "ready": {k: v is not None for k, v in P.items()},
         "errors": ERR,
+        # Published so the UI never hardcodes a budget that .env can change.
+        "config": {
+            "max_questions": settings.max_questions,
+            "min_questions": settings.min_questions,
+            "tau_id": settings.tau_id,
+            "tau_reject": settings.tau_reject,
+        },
     }
 
 

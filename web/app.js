@@ -1,7 +1,7 @@
 // Talks only to contracts/api.md. No backend logic here.
 const $ = (id) => document.getElementById(id);
 
-const QUESTION_BUDGET = 5; // display only: "Question 2 of 5"
+let QUESTION_BUDGET = 5; // overwritten by GET /health config.max_questions
 
 let sessionId = null;
 let startBits = null;
@@ -780,6 +780,12 @@ async function loadHealth() {
   try {
     const r = await fetch("/health");
     const d = await r.json();
+    // The question budget is server-side truth: .env can change it, and a
+    // stale hardcoded 5 renders questions 6 and 7 as "QUESTION 5 OF 5",
+    // which reads as a hung page rather than a longer session.
+    if (d && d.config && d.config.max_questions) {
+      QUESTION_BUDGET = d.config.max_questions;
+    }
     const ready = (d && d.ready) || {};
     ["store", "voice", "engine"].forEach((k) => {
       const el = $("h-" + k);

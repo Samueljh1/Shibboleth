@@ -187,7 +187,14 @@ class EntropyEngine:
             s.status = "rejected"
             return s
 
-        if top_p > self.tau_id:
+        # Concentration is not evidence. Answering nothing correctly still
+        # shuffles mass between candidates, and with a small pool it can drift
+        # past tau_id -- letting someone who knew none of the answers be
+        # "identified" as whoever the misses happened to favour. Identification
+        # requires at least one answer that actually graded correct.
+        knows_something = any(a.correct for a in s.asked)
+
+        if top_p > self.tau_id and knows_something:
             # Someone crossed the bar — but if a specific identity was claimed
             # and the evidence points elsewhere, that is a rejection, not an
             # identification of the bystander the clone happened to resemble.
@@ -205,7 +212,7 @@ class EntropyEngine:
             return s
 
         if force or len(s.asked) >= self.max_questions:
-            s.status = "rejected"  # budget spent with no winner
+            s.status = "rejected"  # budget spent with no winner, or no evidence
             return s
 
         s.status = "in_progress"
